@@ -1,0 +1,102 @@
+\input{common/preamble.tex}
+\color{dark}
+\setlength{\parindent}{0em}
+\setlength{\parskip}{0.5em}
+\renewcommand{\baselinestretch}{1.2}
+
+\begin{document}
+\centering
+\LARGE
+Arch Linux installation guide for MacBook Pro Retina\\
+ - mid-2015 model - 
+\normalsize\justify
+\tableofcontents
+\clearpage
+
+\section{Forewords}
+
+\noindent After lots of reading, searching, experimenting, furious late-night shell command typing and 
+do-overs here are the results of replacing OSX with Arch Linux (KDE) on a mid-2015 MacBook Pro. 
+
+\noindent This guide is a record of my experience and results. I'm leaving this out there for anyone that
+might find this useful.
+
+\noindent I would also advise backing up your drive using a complete bit-to-bit cloning process (unlike me...oops) so that you retain a copy of everything including the recovery partition on the Mac. 
+It's better to be safe...
+
+\section{Machine Specs}
+
+\begin{tabular}{c|l}
+	\hline
+	Display   & 15.4" LED-backlit Retina display with IPS technology; 2880-by-1800 native resolution at 220 pixels per inch with support for millions of colours \\\hline
+	Processor & 2.5GHz quad-core Intel Core i7 processor (Turbo Boost up to 3.7GHz) with 6MB shared L3 cache \\\hline
+	RAM       & 16GB of 1600MHz DDR3L memory \\\hline
+	GPU       & Intel Iris Pro Graphics, <br>AMD Radeon R9 M370X with 2GB of GDDR5 memory \\\hline
+	Storage   & 512GB PCIe-based flash \\\hline
+	Webcam    & 720p FaceTime HD camera \\\hline
+	Network   & 802.11ac Wi‑Fi wireless networking; IEEE 802.11a/b/g/n compatible, <br>Bluetooth 4.0 wireless technology \\\hline
+\end{tabular}
+
+\section{Results}
+
+//TODO
+
+//Heating issues with mbp, fan control and turning off boost on the processor to keep things
+reasonable temperature-wise.
+
+\section{Pre-Installation}
+
+\subsection{Preparations}
+
+\begin{itemize-steps}
+	\item \textbf{Backup drive} (complete drive clone preferable).
+	\item Make a copy of the colour profile file(s) on the mac located in \code{/Library/ColorSync/Profiles/Displays/*} to a USB stick. It will be useful later on Linux.
+
+\end{itemize-steps}
+
+\subsection{Making a bootable USB}
+
+\subsubsection{From Linux}
+
+\begin{itemize-steps}
+	\item \terminalcmd{dd if=archlinux.iso of=/dev/sdX bs=16M \&\& sync} \\
+	      \block{Where \code{X} is your target USB drive letter (use \code{lsblk} for an overview of all connected drives to find out)}
+\end{itemize-steps}
+
+\subsubsection{From a Mac}
+
+\begin{itemize-steps}
+	\item \terminalcmd{diskutil unmountDisk diskX} \\
+		  \block{Where \code{X} is your target USB drive number (use \code{diskutil list} for an overview of all connected drives to find out).}
+	\item \terminalcmd{sudo dd if=/Users/\$USERNAME/Downloads/archlinux.iso of=/dev/diskX bs=16M}\\
+		  \block{Replace \code{\$USERNAME} with your username on the mac and replace \code{X} with the USB drive's number.}
+\end{itemize-steps}
+
+
+\section{Installation}
+
+\subsection{Booting from the USB stick}
+
+Simply plug in the USB in the MBP and press the \fbox{Alt} (a.k.a. \fbox{options}) key during start up
+to reach the boot menu.
+
+\subsection{Preliminary setup}
+
+\begin{itemize-steps}
+	\item \terminalcmd{loadkeys uk}\\
+		  \block{Load your keyboard layout. Replace `uk` with whichever you have on your machine.}
+	\item \terminalcmd{wifi-menu}\\
+		  \block{Connect up to the wifi network. On the MPB Pro 2015 the wifi gets detected and works out of the box at this stage.}
+\end{itemize-steps}
+
+
+\clearpage
+\section{References}
+
+\begin{itemize}
+	\item \href{https://wiki.archlinux.org/index.php/MacBookPro11,x#Using_the_MacBook.27s_native_EFI_bootloader_.28recommended.29}{Arch Linux's MacBookPro 11.x Wiki page}
+	\item \href{https://gist.github.com/mattiaslundberg/8620837}{Mattias Lindberg's Encrypted volume Arch install guide}
+	\item \href{https://www.howtoforge.com/tutorial/how-to-install-arch-linux-with-full-disk-encryption/}{HowToForge | How to install Arch Linux with Full Disk Encryption}
+\end{itemize}
+
+\end{document}

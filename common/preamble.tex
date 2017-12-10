@@ -1,0 +1,91 @@
+% !TeX program = LuaLaTeX
+\documentclass[12pt, a4paper]{article}
+\usepackage[utf8]{inputenc} 
+\usepackage[left=1cm,right=1cm,top=1.5cm,bottom=1.5cm,a4paper]{geometry}
+\usepackage{fontspec} %Fonts
+	\setmainfont{ClearSans-Regular.ttf}[
+		Path		   = fonts/clear-sans/,
+		BoldFont       = ClearSans-Bold.ttf,
+		ItalicFont     = ClearSans-Italic.ttf,
+		BoldItalicFont = ClearSans-BoldItalic.ttf
+	]
+	\setmonofont{LiberationMono-Regular.ttf}[
+		Path 		   = fonts/liberation-mono/,
+		BoldFont	   = LiberationMono-Bold.ttf,
+		ItalicFont	   = LiberationMono-Italic.ttf,
+		BoldItalicFont = LiberationMono-BoldItalic.ttf
+	]
+	\newfontfamily\openiconic{open-iconic}[Path = fonts/]
+	\newfontfamily\devicon{devicon}[Path = fonts/]
+	\newcommand{\icon}[2]{\raisebox{-0.175\height}{\textcolor{#1}{\openiconic{#2}}}}
+\usepackage{ragged2e} %text alignment
+\usepackage[table,xcdraw,usenames,dvipsnames]{xcolor}
+	\definecolor{code-background}{HTML}{f3f3f3}
+	\definecolor{dark}{HTML}{31363b}
+	\definecolor{linegrey}{HTML}{a8abaf}
+	\definecolor{textgrey}{HTML}{777777}
+\usepackage{colortbl}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{verbatimbox}
+\usepackage{enumitem}
+	\newlist{itemize-steps}{itemize}{1}
+	\setlist[itemize-steps,1]{label=,leftmargin=0cm}
+\usepackage{url}
+\usepackage{hyperref} % Hyperlink references
+	\hypersetup{colorlinks=false,pdfborder=0 0 0}
+\usepackage{mdframed} % minipage box
+	\newmdenv{allborders}
+	\newmdenv[topline=false,leftline=false,rightline=false,linecolor=linegrey]{bottomborder}
+	\mdfdefinestyle{commentbox}{
+		topline=false,
+		rightline=false,
+		bottomline=false,
+		linewidth=1mm,
+		linecolor=linegrey,
+		splittopskip=0,
+		splitbottomskip=0,
+		frametitleaboveskip=0,
+		frametitlebelowskip=0,
+		skipabove=0,
+		skipbelow=0,
+		leftmargin=+0.1cm,
+		rightmargin=0,
+		innertopmargin=2mm,
+		innerbottommargin=2mm,
+		roundcorner=0mm,
+		backgroundcolor=white
+	}
+	\newmdenv[topline=false,leftline=false,rightline=false,linecolor=dark,backgroundcolor=dark,fontcolor=white]{headerborder}
+\usepackage{listings} %for code
+\lstset{ %
+	backgroundcolor=\color{code-background},
+	basicstyle=\scriptsize,
+	breakatwhitespace=false,         % sets if automatic breaks should only happen at whitespace
+	breaklines=true,                 % sets automatic line breaking
+	commentstyle=\color{grey},   	   % comment style
+	frame=single,                    % adds a frame around the code
+	keepspaces=true,                 % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
+	keywordstyle=\color{Violet},       % keyword style
+	%numbers=left,                    % where to put the line-numbers; possible values are (none, left, right)
+	%numbersep=5pt,                   % how far the line-numbers are from the code
+	%numberstyle=\tiny\color{gray}, % the style that is used for the line-numbers
+	%rulecolor=\color{black},         % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. comments (green here))
+	%stepnumber=1,                    % the step between two line-numbers. If it's 1, each line will be numbered
+	tabsize=4,
+	title=\lstname                   % show the filename of files included with \lstinputlisting; also try caption instead of title
+}
+\newcommand{\code}[1]{ %Code text formatting
+	\begin{small}
+		\colorbox{code-background}{\texttt{#1}}
+	\end{small}
+}
+\newcommand{\terminalcmd}[1]{ %Terminal line formatting
+	\textcolor{orange}{\$} \code{#1}
+}
+\newcommand{\block}[1]{
+	\begin{mdframed}[style=commentbox]
+		\color{dark}{#1}
+	\end{mdframed}
+}
