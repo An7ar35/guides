@@ -1,5 +1,5 @@
 % !TeX program = LuaLaTeX
-\documentclass[12pt, a4paper]{article}
+\documentclass[12pt, a4paper, oneside]{article}
 \usepackage[utf8]{inputenc} 
 \usepackage[left=1cm,right=1cm,top=1.5cm,bottom=1.5cm,a4paper]{geometry}
 \usepackage{fontspec} %Fonts
@@ -35,6 +35,7 @@
 \usepackage{url}
 \usepackage{hyperref} % Hyperlink references
 	\hypersetup{colorlinks=false,pdfborder=0 0 0}
+\usepackage{environ}
 \usepackage{mdframed} % minipage box
 	\newmdenv{allborders}
 	\newmdenv[topline=false,leftline=false,rightline=false,linecolor=linegrey]{bottomborder}
@@ -76,16 +77,12 @@
 	tabsize=4,
 	title=\lstname                   % show the filename of files included with \lstinputlisting; also try caption instead of title
 }
-\newcommand{\code}[1]{ %Code text formatting
-	\begin{small}
-		\colorbox{code-background}{\texttt{#1}}
-	\end{small}
-}
-\newcommand{\terminalcmd}[1]{ %Terminal line formatting
-	\textcolor{orange}{\$} \code{#1}
-}
-\newcommand{\block}[1]{
-	\begin{mdframed}[style=commentbox]
-		\color{dark}{#1}
-	\end{mdframed}
-}
+%%% Code snippets and terminal command snippets %%%
+\newcommand{\code}[1]{\small{\colorbox{code-background}{\texttt{#1}}}} %Code text formatting
+\newcommand{\terminalcmd}[1]{\textcolor{orange}{\$} \code{#1}} %Terminal line formatting
+%%% Blocks %%%
+\newcommand{\blockheader}[1]{\raggedright{\textbf{\textcolor{textgrey}{#1}}\linebreak}}
+\newcommand{\block}[1]{\begin{mdframed}[style=commentbox]\color{dark}{#1}\end{mdframed}}
+\newenvironment{blocksection}{\begin{mdframed}[style=commentbox]\color{dark}}{\end{mdframed}}
+
+%\usepackage{showframe}

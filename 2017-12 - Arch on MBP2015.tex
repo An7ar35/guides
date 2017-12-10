@@ -26,7 +26,7 @@ It's better to be safe...
 
 \section{Machine Specs}
 
-\begin{tabular}{c|l}
+\begin{tabularx}{\textwidth}{|c|X|}
 	\hline
 	Display   & 15.4" LED-backlit Retina display with IPS technology; 2880-by-1800 native resolution at 220 pixels per inch with support for millions of colours \\\hline
 	Processor & 2.5GHz quad-core Intel Core i7 processor (Turbo Boost up to 3.7GHz) with 6MB shared L3 cache \\\hline
@@ -34,8 +34,9 @@ It's better to be safe...
 	GPU       & Intel Iris Pro Graphics, <br>AMD Radeon R9 M370X with 2GB of GDDR5 memory \\\hline
 	Storage   & 512GB PCIe-based flash \\\hline
 	Webcam    & 720p FaceTime HD camera \\\hline
-	Network   & 802.11ac Wi‑Fi wireless networking; IEEE 802.11a/b/g/n compatible, <br>Bluetooth 4.0 wireless technology \\\hline
-\end{tabular}
+	Network   & 802.11ac Wi‑Fi wireless networking; IEEE 802.11a/b/g/n compatible, \linebreak
+				Bluetooth 4.0 wireless technology \\\hline
+\end{tabularx}
 
 \section{Results}
 
@@ -72,7 +73,6 @@ reasonable temperature-wise.
 		  \block{Replace \code{\$USERNAME} with your username on the mac and replace \code{X} with the USB drive's number.}
 \end{itemize-steps}
 
-
 \section{Installation}
 
 \subsection{Booting from the USB stick}
@@ -88,6 +88,73 @@ to reach the boot menu.
 	\item \terminalcmd{wifi-menu}\\
 		  \block{Connect up to the wifi network. On the MPB Pro 2015 the wifi gets detected and works out of the box at this stage.}
 \end{itemize-steps}
+
+\subsection{Partitioning and Crypto volume setup}
+
+The assumption here is that the hard drive where everything will be installed to is \code{/dev/sda}. The partition structure will thus be: \\
+\code{/dev/sda1} for the EFI partition,\\
+\code{/dev/sda2} for the Boot partition and\\
+\code{/dev/sda3} for the encrypted volume where the root, home and swap will be located.\\
+
+\begin{itemize-steps}
+	\item \terminalcmd{cgdisk /dev/sda}
+	      \begin{blocksection}
+		  \blockheader{Partition layout with just Linux}
+		  \textit{Warning: this will erase every thing including the recovery partition for OSX. \\
+		  No easy way to go back after this without a bit-to-bit HDD clone}
+		  \begin{enumerate}
+		  	\item 100M partition `EFI' (Hex \#\code{ef00})
+		  	\item 250M partition `Boot' (Hex \#\code{8300})
+		  	\item 100\% remainder of the space for the crypto volume (Hex \#\code{8300})
+		  \end{enumerate}
+		  The root and home partition will be created later in the crypto volume
+	  	\end{blocksection}
+	\item \terminalcmd{cryptsetup --verbose --verify-passphrase --cipher aes-xts-plain64 --key-size 512 --hash sha512 
+		--iter-time 5000 --use-random luksFormat /dev/sda3}
+		  \block{Sets up the crypto volume.}
+	\item \terminalcmd{cryptsetup open --type luks /dev/sda2 mctoasty}
+		  \block{\code{mctoasty} is the mounted name of the crypto volume. You can choose your own.}
+\end{itemize-steps}
+
+\subsubsection{Create crypto volume partitions}
+\begin{itemize-steps}
+	\item \terminalcmd{pvcreate /dev/mapper/mctoasty}
+	\item \terminalcmd{vgcreate vg0 /dev/mapper/mctoasty}
+	\item \terminalcmd{lvcreate --size 16G vg0 --name swap}
+	\item \terminalcmd{lvcreate --size 50GB vg0 --name root}
+		  \block{Adjust root's size as required.}
+	\item \terminalcmd{lvcreate -l +100\%FREE vg0 --name home}
+\end{itemize-steps}
+
+\subsubsection{Formatting all the partitions}
+
+\begin{itemize-steps}
+	\item \terminalcmd{mkfs.vfat -F32 /dev/sda1}
+		  \block{EFI partition}
+	\item \terminalcmd{mkfs.ext2 /dev/sda2}
+		  \block{Boot partition}
+	\item \terminalcmd{mkswap /dev/mapper/vg0-swap}
+	\item \terminalcmd{mkfs.ext4 /dev/mapper/vg0-root}
+	\item \terminalcmd{mkfs.ext4 /dev/mapper/vg0-home}
+\end{itemize-steps}
+
+\subsubsection{Mount all the partitions}
+
+\begin{itemize-steps}
+	\item \terminalcmd{mount /dev/mapper/vg0-root /mnt}
+	\item \terminalcmd{swapon /dev/mapper/vg0-swap}
+	\item \terminalcmd{mkdir /mnt/boot}
+	\item \terminalcmd{mount /dev/sda2 /mnt/boot}
+	\item \terminalcmd{mkdir /mnt/boot/efi}
+	\item \terminalcmd{mount /dev/sda1 /mnt/boot/efi}
+	\item \terminalcmd{mkdir /mnt/home}
+	\item \terminalcmd{mount /dev/mapper/vg0-home /mnt/home}
+\end{itemize-steps}
+
+
+
+
+
 
 
 \clearpage
