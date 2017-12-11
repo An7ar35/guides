@@ -2,6 +2,7 @@
 \documentclass[12pt, a4paper, oneside]{article}
 \usepackage[utf8]{inputenc} 
 \usepackage[left=1cm,right=1cm,top=1.5cm,bottom=1.5cm,a4paper]{geometry}
+\usepackage[parfill]{parskip}
 \usepackage{fontspec} %Fonts
 	\setmainfont{ClearSans-Regular.ttf}[
 		Path		   = fonts/clear-sans/,
@@ -24,14 +25,18 @@
 	\definecolor{dark}{HTML}{31363b}
 	\definecolor{linegrey}{HTML}{a8abaf}
 	\definecolor{textgrey}{HTML}{777777}
+	\definecolor{codekeyword1}{HTML}{3aa3ff}
 \usepackage{colortbl}
 \usepackage{float}
 \usepackage{graphicx}
 \usepackage{tabularx}
 \usepackage{verbatimbox}
+\usepackage{soul}
+    \sethlcolor{code-background}
+\usepackage[skins]{tcolorbox}
+    \tcbset{commonstyle/.style={boxrule=0pt,sharp corners,enhanced,nobeforeafter,boxsep=0pt,colback=code-background,fit width from 0 to \textwidth}}
+    \newtcolorbox{codesnippetbox}[1][]{commonstyle,#1}
 \usepackage{enumitem}
-	\newlist{itemize-steps}{itemize}{1}
-	\setlist[itemize-steps,1]{label=,leftmargin=0cm}
 \usepackage{url}
 \usepackage{hyperref} % Hyperlink references
 	\hypersetup{colorlinks=false,pdfborder=0 0 0}
@@ -51,38 +56,65 @@
 		frametitlebelowskip=0,
 		skipabove=0,
 		skipbelow=0,
-		leftmargin=+0.1cm,
+		leftmargin=+0.3cm,
 		rightmargin=0,
 		innertopmargin=2mm,
 		innerbottommargin=2mm,
 		roundcorner=0mm,
 		backgroundcolor=white
 	}
-	\newmdenv[topline=false,leftline=false,rightline=false,linecolor=dark,backgroundcolor=dark,fontcolor=white]{headerborder}
+	\mdfdefinestyle{codebox}{
+		topline=false,
+		rightline=false,
+		leftline=false,
+		bottomline=false,
+		splittopskip=0,
+		splitbottomskip=0,
+		frametitleaboveskip=0,
+		frametitlebelowskip=0,
+		skipabove=0,
+		skipbelow=0,
+		leftmargin=0,
+		rightmargin=0,
+		innertopmargin=2mm,
+		innerbottommargin=2mm,
+		roundcorner=0mm,
+		backgroundcolor=code-background
+	}	
+    \newmdenv[topline=false,leftline=false,rightline=false,linecolor=dark,backgroundcolor=dark,fontcolor=white]{headerborder}
 \usepackage{listings} %for code
-\lstset{ %
-	backgroundcolor=\color{code-background},
-	basicstyle=\scriptsize,
-	breakatwhitespace=false,         % sets if automatic breaks should only happen at whitespace
-	breaklines=true,                 % sets automatic line breaking
-	commentstyle=\color{grey},   	   % comment style
-	frame=single,                    % adds a frame around the code
-	keepspaces=true,                 % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
-	keywordstyle=\color{Violet},       % keyword style
-	%numbers=left,                    % where to put the line-numbers; possible values are (none, left, right)
-	%numbersep=5pt,                   % how far the line-numbers are from the code
-	%numberstyle=\tiny\color{gray}, % the style that is used for the line-numbers
-	%rulecolor=\color{black},         % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. comments (green here))
-	%stepnumber=1,                    % the step between two line-numbers. If it's 1, each line will be numbered
-	tabsize=4,
-	title=\lstname                   % show the filename of files included with \lstinputlisting; also try caption instead of title
-}
+    \lstset{ %
+        backgroundcolor=\color{code-background},
+        basicstyle=\scriptsize,
+        breakatwhitespace=false,         % sets if automatic breaks should only happen at whitespace
+        breaklines=true,                 % sets automatic line breaking
+        commentstyle=\color{grey},   	   % comment style
+        frame=single,                    % adds a frame around the code
+        keepspaces=true,                 % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
+        keywordstyle=\color{Violet},       % keyword style
+        %numbers=left,                    % where to put the line-numbers; possible values are (none, left, right)
+        %numbersep=5pt,                   % how far the line-numbers are from the code
+        %numberstyle=\tiny\color{gray}, % the style that is used for the line-numbers
+        %rulecolor=\color{black},         % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. comments (green here))
+        %stepnumber=1,                    % the step between two line-numbers. If it's 1, each line will be numbered
+        tabsize=4,
+        title=\lstname                   % show the filename of files included with \lstinputlisting; also try caption instead of title
+    }
 %%% Code snippets and terminal command snippets %%%
-\newcommand{\code}[1]{\small{\colorbox{code-background}{\texttt{#1}}}} %Code text formatting
-\newcommand{\terminalcmd}[1]{\textcolor{orange}{\$} \code{#1}} %Terminal line formatting
+\newcommand{\code}[1]{\small\texttt{\sethlcolor{code-background}\hl{#1}}} %Code text formatting
+\newcommand{\terminalcmd}[1]{\begin{tabularx}{\textwidth}{cX}\textcolor{orange}{\$} & \code{#1}\end{tabularx}} %Terminal line formatting
 %%% Blocks %%%
 \newcommand{\blockheader}[1]{\raggedright{\textbf{\textcolor{textgrey}{#1}}\linebreak}}
 \newcommand{\block}[1]{\begin{mdframed}[style=commentbox]\color{dark}{#1}\end{mdframed}}
 \newenvironment{blocksection}{\begin{mdframed}[style=commentbox]\color{dark}}{\end{mdframed}}
+\newenvironment{codeblock}{
+    \begin{mdframed}[style=codebox]
+        \color{dark}
+        \small
+        \ttfamily
+}{
+    \par
+    \end{mdframed}
+}
 
 %\usepackage{showframe}
