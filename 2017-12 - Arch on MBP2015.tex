@@ -6,11 +6,24 @@
 \renewcommand{\baselinestretch}{1.2}
 
 \begin{document}
+\newgeometry{left=1cm,right=1cm,top=1cm,bottom=1.5cm}
 \sloppy
-\centering
-\LARGE
-Arch Linux installation guide for MacBook Pro Retina\\
- - mid-2015 model - 
+\begin{headerborder}
+    \centering
+    \begin{LARGE}
+        Arch Linux installation guide\linebreak
+        MacBook Pro Retina mid-2015 model\linebreak
+        \raisebox{-0.2\height}{\openiconic[]}
+        \par
+    \end{LARGE}
+    \begin{tabularx}{\textwidth}{lR}
+        \href{https://an7ar35.bitbucket.io/}{\raisebox{-0.25\height}{\includegraphics[scale=0.25]{common/avatar.png}} An7ar35} (Dec 2017) &
+        \raisebox{-0.25\height}{\includegraphics[scale=0.15]{common/licenses/by-nc-sa_eu.png}}
+    \end{tabularx}
+\end{headerborder}
+
+
+    
 \normalsize\justify
 \tableofcontents
 \clearpage
@@ -37,6 +50,9 @@ I would also advise backing up your drive using a complete bit-to-bit cloning pr
 \end{tabularx}
 
 \section{Results}
+
+\raisebox{-0.2\height}{\color{green}{\openiconic[]}}
+\raisebox{-0.2\height}{\color{red}{\openiconic[]}}
 
 //TODO
 
@@ -530,7 +546,12 @@ The Kernel \href{https://bugzilla.kernel.org/show_bug.cgi?id=117811}{Bug report 
 
 
 
+\section{Mac Recovery}
 
+xar -xf \$OSXDMG.dmg
+cd InstallMacOSX.pkg/
+dmg2img InstallESD.dmg
+sudo dd if=InstallESD.img of=/dev/sdb bs=1M
 
 
 \clearpage

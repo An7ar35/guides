@@ -1,35 +1,37 @@
 % !TeX program = LuaLaTeX
-\documentclass[12pt, a4paper, oneside]{article}
+\documentclass[12pt,a4paper,oneside]{article}
 \usepackage[utf8]{inputenc} 
-\usepackage[left=1cm,right=1cm,top=1.5cm,bottom=1.5cm,a4paper]{geometry}
+\usepackage[left=0cm,right=0cm,top=0cm,bottom=0cm,a4paper]{geometry}
 \usepackage[parfill]{parskip}
+\usepackage{epstopdf} %.eps file import
 \usepackage{fontspec} %Fonts
-	\setmainfont{ClearSans-Regular.ttf}[
-		Path		   = fonts/clear-sans/,
-		BoldFont       = ClearSans-Bold.ttf,
-		ItalicFont     = ClearSans-Italic.ttf,
-		BoldItalicFont = ClearSans-BoldItalic.ttf
-	]
-	\setmonofont{LiberationMono-Regular.ttf}[
-		Path 		   = fonts/liberation-mono/,
-		BoldFont	   = LiberationMono-Bold.ttf,
-		ItalicFont	   = LiberationMono-Italic.ttf,
-		BoldItalicFont = LiberationMono-BoldItalic.ttf
-	]
-	\newfontfamily\openiconic{open-iconic}[Path = fonts/]
-	\newfontfamily\devicon{devicon}[Path = fonts/]
-	\newcommand{\icon}[2]{\raisebox{-0.175\height}{\textcolor{#1}{\openiconic{#2}}}}
+    \setmainfont{ClearSans-Regular.ttf}[
+        Path		   = fonts/clear-sans/,
+        BoldFont       = ClearSans-Bold.ttf,
+        ItalicFont     = ClearSans-Italic.ttf,
+        BoldItalicFont = ClearSans-BoldItalic.ttf
+    ]
+    \setmonofont{LiberationMono-Regular.ttf}[
+        Path 		   = fonts/liberation-mono/,
+        BoldFont	   = LiberationMono-Bold.ttf,
+        ItalicFont	   = LiberationMono-Italic.ttf,
+        BoldItalicFont = LiberationMono-BoldItalic.ttf
+    ]
+    \newfontfamily\openiconic{open-iconic}[Path = fonts/]
+    \newfontfamily\devicon{devicon}[Path = fonts/]
+    \newcommand{\icon}[2]{\raisebox{-0.175\height}{\textcolor{#1}{\openiconic{#2}}}}
 \usepackage{ragged2e} %text alignment
 \usepackage[table,xcdraw,usenames,dvipsnames]{xcolor}
-	\definecolor{code-background}{HTML}{f3f3f3}
-	\definecolor{dark}{HTML}{31363b}
-	\definecolor{linegrey}{HTML}{a8abaf}
-	\definecolor{textgrey}{HTML}{777777}
-	\definecolor{codekeyword1}{HTML}{3aa3ff}
+    \definecolor{code-background}{HTML}{f3f3f3}
+    \definecolor{dark}{HTML}{31363b}
+    \definecolor{linegrey}{HTML}{a8abaf}
+    \definecolor{textgrey}{HTML}{777777}
+    \definecolor{codekeyword1}{HTML}{3aa3ff}
 \usepackage{colortbl}
 \usepackage{float}
 \usepackage{graphicx}
 \usepackage{tabularx}
+    \newcolumntype{R}{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}X}
 \usepackage{verbatimbox}
 \usepackage{soul}
     \sethlcolor{code-background}
@@ -39,49 +41,49 @@
 \usepackage{enumitem}
 \usepackage{url}
 \usepackage{hyperref} % Hyperlink references
-	\hypersetup{colorlinks=false,pdfborder=0 0 0}
+    \hypersetup{colorlinks=false,pdfborder=0 0 0}
 \usepackage{environ}
 \usepackage{mdframed} % minipage box
-	\newmdenv{allborders}
-	\newmdenv[topline=false,leftline=false,rightline=false,linecolor=linegrey]{bottomborder}
-	\mdfdefinestyle{commentbox}{
-		topline=false,
-		rightline=false,
-		bottomline=false,
-		linewidth=1mm,
-		linecolor=linegrey,
-		splittopskip=0,
-		splitbottomskip=0,
-		frametitleaboveskip=0,
-		frametitlebelowskip=0,
-		skipabove=0,
-		skipbelow=0,
-		leftmargin=+0.3cm,
-		rightmargin=0,
-		innertopmargin=2mm,
-		innerbottommargin=2mm,
-		roundcorner=0mm,
-		backgroundcolor=white
-	}
-	\mdfdefinestyle{codebox}{
-		topline=false,
-		rightline=false,
-		leftline=false,
-		bottomline=false,
-		splittopskip=0,
-		splitbottomskip=0,
-		frametitleaboveskip=0,
-		frametitlebelowskip=0,
-		skipabove=0,
-		skipbelow=0,
-		leftmargin=0,
-		rightmargin=0,
-		innertopmargin=2mm,
-		innerbottommargin=2mm,
-		roundcorner=0mm,
-		backgroundcolor=code-background
-	}	
+    \newmdenv{allborders}
+    \newmdenv[topline=false,leftline=false,rightline=false,linecolor=linegrey]{bottomborder}
     \newmdenv[topline=false,leftline=false,rightline=false,linecolor=dark,backgroundcolor=dark,fontcolor=white]{headerborder}
+    \mdfdefinestyle{commentbox}{
+        topline=false,
+        rightline=false,
+        bottomline=false,
+        linewidth=1mm,
+        linecolor=linegrey,
+        splittopskip=0,
+        splitbottomskip=0,
+        frametitleaboveskip=0,
+        frametitlebelowskip=0,
+        skipabove=0,
+        skipbelow=0,
+        leftmargin=+0.3cm,
+        rightmargin=0,
+        innertopmargin=2mm,
+        innerbottommargin=2mm,
+        roundcorner=0mm,
+        backgroundcolor=white
+    }
+    \mdfdefinestyle{codebox}{
+        topline=false,
+        rightline=false,
+        leftline=false,
+        bottomline=false,
+        splittopskip=0,
+        splitbottomskip=0,
+        frametitleaboveskip=0,
+        frametitlebelowskip=0,
+        skipabove=0,
+        skipbelow=0,
+        leftmargin=0,
+        rightmargin=0,
+        innertopmargin=2mm,
+        innerbottommargin=2mm,
+        roundcorner=0mm,
+        backgroundcolor=code-background
+    }
 \usepackage{listings} %for code
     \lstset{ %
         backgroundcolor=\color{code-background},
@@ -100,6 +102,8 @@
         tabsize=4,
         title=\lstname                   % show the filename of files included with \lstinputlisting; also try caption instead of title
     }
+%%% Header %%%
+\newenvironment{headersection}{\begin{headerborder}\vspace{0.5cm}\begin{minipage}[t]{\textwidth}}{\end{minipage}\vspace{0.5em}\end{headerborder}}
 %%% Code snippets and terminal command snippets %%%
 \newcommand{\code}[1]{\small\texttt{\sethlcolor{code-background}\hl{#1}}} %Code text formatting
 \newcommand{\terminalcmd}[1]{\begin{tabularx}{\textwidth}{cX}\textcolor{orange}{\$} & \code{#1}\end{tabularx}} %Terminal line formatting
@@ -107,14 +111,6 @@
 \newcommand{\blockheader}[1]{\raggedright{\textbf{\textcolor{textgrey}{#1}}\linebreak}}
 \newcommand{\block}[1]{\begin{mdframed}[style=commentbox]\color{dark}{#1}\end{mdframed}}
 \newenvironment{blocksection}{\begin{mdframed}[style=commentbox]\color{dark}}{\end{mdframed}}
-\newenvironment{codeblock}{
-    \begin{mdframed}[style=codebox]
-        \color{dark}
-        \small
-        \ttfamily
-}{
-    \par
-    \end{mdframed}
-}
+\newenvironment{codeblock}{\begin{mdframed}[style=codebox]\color{dark}\small\ttfamily}{\par\end{mdframed}}
 
 %\usepackage{showframe}
