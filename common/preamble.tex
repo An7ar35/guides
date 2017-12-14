@@ -39,9 +39,10 @@
     \tcbset{commonstyle/.style={boxrule=0pt,sharp corners,enhanced,nobeforeafter,boxsep=0pt,colback=code-background,fit width from 0 to \textwidth}}
     \newtcolorbox{codesnippetbox}[1][]{commonstyle,#1}
 \usepackage{enumitem}
+\usepackage[bottom]{footmisc}
 \usepackage{url}
 \usepackage{hyperref} % Hyperlink references
-    \hypersetup{colorlinks=false,pdfborder=0 0 0}
+    \hypersetup{colorlinks=true,linkcolor=dark,urlcolor=MidnightBlue,pdfborder=0 0 0}
 \usepackage{environ}
 \usepackage{mdframed} % minipage box
     \newmdenv{allborders}
@@ -105,12 +106,15 @@
 %%% Header %%%
 \newenvironment{headersection}{\begin{headerborder}\vspace{0.5cm}\begin{minipage}[t]{\textwidth}}{\end{minipage}\vspace{0.5em}\end{headerborder}}
 %%% Code snippets and terminal command snippets %%%
-\newcommand{\code}[1]{\small\texttt{\sethlcolor{code-background}\hl{#1}}} %Code text formatting
+\newcommand{\code}[1]{\begin{small}\texttt{\sethlcolor{code-background}\hl{#1}}\end{small}} %Code text formatting
 \newcommand{\terminalcmd}[1]{\begin{tabularx}{\textwidth}{cX}\textcolor{orange}{\$} & \code{#1}\end{tabularx}} %Terminal line formatting
 %%% Blocks %%%
 \newcommand{\blockheader}[1]{\raggedright{\textbf{\textcolor{textgrey}{#1}}\linebreak}}
 \newcommand{\block}[1]{\begin{mdframed}[style=commentbox]\color{dark}{#1}\end{mdframed}}
 \newenvironment{blocksection}{\begin{mdframed}[style=commentbox]\color{dark}}{\end{mdframed}}
 \newenvironment{codeblock}{\begin{mdframed}[style=codebox]\color{dark}\small\ttfamily}{\par\end{mdframed}}
-
+%%% Custom hrefs %%%
+\newcommand{\cref}[3]{\href{#2}{\color{#1}{#3}}}%
+%%% Custom free bullet point
+\newcommand{\cbullet}[1]{\hangindent=0.57em{· #1}}
 %\usepackage{showframe}

@@ -1,3 +1,5 @@
+% This text is released under the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) License
+% Full license available at https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
 \input{common/preamble.tex}
 \title{Arch Linux installation guide for MacBook Pro Retina}
 \color{dark}
@@ -17,8 +19,8 @@
         \par
     \end{LARGE}
     \begin{tabularx}{\textwidth}{lR}
-        \href{https://an7ar35.bitbucket.io/}{\raisebox{-0.25\height}{\includegraphics[scale=0.25]{common/avatar.png}} An7ar35} (Dec 2017) &
-        \raisebox{-0.25\height}{\includegraphics[scale=0.15]{common/licenses/by-nc-sa_eu.png}}
+        \cref{white}{https://an7ar35.bitbucket.io/}{\raisebox{-0.25\height}{\includegraphics[scale=0.25]{common/avatar.png}} An7ar35} (Dec 2017) &
+        \raisebox{-0.25\height}{\includegraphics[scale=0.2]{common/licenses/by-nc-sa_eu.png}}
     \end{tabularx}
 \end{headerborder}
 
@@ -35,31 +37,72 @@ do-overs here are the results of replacing OSX with Arch Linux (KDE) on a mid-20
 
 I would also advise backing up your drive using a complete bit-to-bit cloning process (unlike me, casually forgetting that step...) so that you retain a copy of everything including the recovery partition on the Mac. This way it is a one-step process to restore everything.
 
+This guide assumes a basic working knowledge of Linux command line (bash).
+
 \section{Machine Specs}
 
 \begin{tabularx}{\textwidth}{|c|X|}
 	\hline
-	Display   & 15.4" LED-backlit Retina display with IPS technology; 2880-by-1800 native resolution at 220 pixels per inch with support for millions of colours \\\hline
-	Processor & 2.5GHz quad-core Intel Core i7 processor (Turbo Boost up to 3.7GHz) with 6MB shared L3 cache \\\hline
-	RAM       & 16GB of 1600MHz DDR3L memory \\\hline
-	GPU       & Intel Iris Pro Graphics, <br>AMD Radeon R9 M370X with 2GB of GDDR5 memory \\\hline
-	Storage   & 512GB PCIe-based flash \\\hline
-	Webcam    & 720p FaceTime HD camera \\\hline
-	Network   & 802.11ac Wi‑Fi wireless networking; IEEE 802.11a/b/g/n compatible, Bluetooth 4.0 wireless technology \\
+	Display   & \cbullet{15.4" LED-backlit Retina display with IPS technology; 2880-by-1800 native resolution at 220 pixels per inch with support for millions of colours} \\\hline
+	Processor & \cbullet{2.5GHz quad-core Intel Core i7 processor (Turbo Boost up to 3.7GHz) with 6MB shared L3 cache} \\\hline
+	RAM       & · 16GB of 1600MHz DDR3L memory \\\hline
+	GPU       & · Intel Iris Pro Graphics, \newline
+				· AMD Radeon R9 M370X with 2GB of GDDR5 memory\\\hline
+	Storage   & · 512GB PCIe-based flash \\\hline
+	Webcam    & · 720p FaceTime HD camera \\\hline
+	Network   & · 802.11ac Wi‑Fi wireless networking; IEEE 802.11a/b/g/n compatible, \newline
+			    · Bluetooth 4.0 wireless technology \\
 	\hline
 \end{tabularx}
 
 \section{Results}
 
-\raisebox{-0.2\height}{\color{green}{\openiconic[]}}
-\raisebox{-0.2\height}{\color{red}{\openiconic[]}}
+\begin{small}\fcolorbox{linegrey}{white}{
+	\textcolor{textgrey}{\textbf{Legend: }}
+	\raisebox{-0.2\height}{\color{green}{\openiconic[]}} Works out-of-the-box or with few steps, 
+	\raisebox{-0.2\height}{\color{blue}{\openiconic[]}} Requires some work, 
+	\raisebox{-0.2\height}{\color{orange}{\openiconic[]}} Not fully working, 
+	\raisebox{-0.2\height}{\color{red}{\openiconic[]}} Broken.}
+\end{small}
 
 //TODO
 
-//FacetimeHD camera driver does not work.
+\begin{center}
+	\rowcolors{2}{gray!25}{white}
+	\begin{tabular}{lcl}
+		\rowcolor{white!50}
+		Item & Result & Note\\
+		\hline\hline
+		FaceTimeHD camera & \raisebox{-0.2\height}{\color{orange}{\openiconic[]}} & Requires own driver construction\\
+		Display (IPS scaling) & \raisebox{-0.2\height}{\color{orange}{\openiconic[]}} & Mixed results without Wayland\\
+		Display (Backlight) & \raisebox{-0.2\height}{\color{blue}{\openiconic[]}} & Needs special EFI addon.\\
+		AMD Radeon R9 M370X & \raisebox{-0.2\height}{\color{green}{\openiconic[]}} & Open source driver works like a charm\\
+		Intel Iris Pro Graphics$^*$ & \raisebox{-0.2\height}{\color{red}{\openiconic[]}} & Disabled by default, graphic switching not working.
+	\end{tabular}
+\end{center}
+
 
 //Heating issues with mbp, fan control and turning off boost on the processor to keep things
 reasonable temperature-wise.
+
+\section{How-To}
+
+\subsection{Naming convention/Nomenclatures}
+
+\begin{tabularx}{\textwidth}{lX}
+	\code{package-name} & Standard package \href{https://www.archlinux.org/packages/}{repository} - use \code{pacman} to install.\\
+	\code{package-name}\textsuperscript{AUR} & Arch User Repository package (\href{https://aur.archlinux.org/}{AUR}) - use \code{yaourt} to install.
+\end{tabularx}
+
+\subsection{Packages}
+
+For complete guides refer to the \code{pacman} \href{https://wiki.archlinux.org/index.php/Pacman}{Wiki} and \code{yaourt}  \href{https://archlinux.fr/yaourt-en}{Wiki}.
+
+\begin{tabularx}{\textwidth}{lX}
+	\code{pacman -Syuu} & Updates cache and packages installed with \code{pacman}.\\
+	\code{pacman -S package-name} & Installs \code{package-name}.\\
+	\code{pacman -R package-name} & Removes \code{package-name}.
+\end{tabularx}
 
 \section{Pre-Installation}
 
@@ -237,9 +280,7 @@ For font maps check the \href{https://wiki.archlinux.org/index.php/fonts#Persist
 \terminalcmd{passwd \$USERNAME}
     \block{Sets the user's password.}
 
-\subsection{Initial RAM Environment Configuration}
-
-\href{https://wiki.archlinux.org/index.php/mkinitcpio}{\code{mkinitcpio}}
+\subsection{Initial RAM Environment Configuration [\href{https://wiki.archlinux.org/index.php/mkinitcpio}{\texttt{mkinitcpio}}]}
 
 \terminalcmd{nano /etc/mkinitcpio.conf}
 \begin{blocksection}
@@ -340,13 +381,13 @@ For each of the 2 packages, \code{cd} into their respective directories and run 
 \subsubsection{Fans}
 
 \terminalcmd{yaourt -S macfanctld}
-    \block{\href{https://github.com/MikaelStrom/macfanctld}{macfanctld} controls the mbp fans.}
+    \block{\href{https://github.com/MikaelStrom/macfanctld}{macfanctld}\textsuperscript{AUR} controls the mbp fans.}
 \terminalcmd{sudo systemctl enable macfanctld.service}
     \block{Turns on the service}
 
 \subsubsection{Processor}
 
-\terminalcmd{intel-ucode}
+\terminalcmd{pacman -S intel-ucode}
     \block{For intel's \href{https://wiki.archlinux.org/index.php/microcode}{microcode} update.}
 \terminalcmd{grub-mkconfig -o /boot/grub/grub.cfg}
     \block{Need to update grub so that it loads the Microcode updates at boot}
@@ -366,7 +407,7 @@ For each of the 2 packages, \code{cd} into their respective directories and run 
     \block{To make sure the sound works.}
 
 
-\textbf{Note}: The internal speaker might not be disabled when using the headphone jack. To solve this, enable "Auto-mute" in alsamixer.
+\textbf{Note}: The internal speaker might not be disabled when using the headphone jack. To solve this, enable "Auto-mute" in \code{alsamixer}.
 
 \subsubsection{Bluetooth}
 
@@ -377,7 +418,6 @@ For each of the 2 packages, \code{cd} into their respective directories and run 
 \terminalcmd{sudo systemctl enable bluetooth.service}
 
 \subsubsection{Video}
-
 \terminalcmd{sudo pacman -S mesa xf86-video-amdgpu vulkan-radeon lib32-mesa}
 \begin{blocksection}
     Installs the open source drivers for the ATI GPU along with the 32bit libs and the Vulkan drivers.\\
@@ -412,7 +452,7 @@ Possible missing firmware module for:
 
 \section{System Setup III: Desktop}
 
-Wayland support as of Dec 2017 on KDE is beta at best. Scaling in nice but buggy as hell displaying artifacts. Until that gets a lot better Xorg is the default choice as display managers go even if HiDPI support is terrible. 
+Wayland support as of Dec 2017 on KDE is beta at best. Scaling in nice but buggy as hell displaying artefacts. Until that gets a lot better Xorg is the default choice as display managers go even if HiDPI support is terrible. 
 
 \subsection{Display manager (\href{https://wiki.archlinux.org/index.php/xorg}{Xorg})}
 
@@ -454,17 +494,17 @@ kde-thumbnailer-gimpsources\\
 `flite` (missing packages causes a "text-to-speech" error - see `journalctl -b`)
 
 
-#### File system
+\subsection{File system}
 
 \code{ntfs-3g}
 \code{exfat-utils}
 \code{gparted} and/or \code{partitionmanager} (KDE)
 
-#### Firewall
+\subsection{Firewall}
 
 Install \code{firewalld} and start the \code{firewalld.service}
 
-If there is a systemd timeout [issue](https://bugzilla.redhat.com/show_bug.cgi?id=1294415#c10) on restart: 
+If there is a systemd timeout \href{https://bugzilla.redhat.com/show_bug.cgi?id=1294415#c10}{issue} on restart: 
 \terminalcmd{sudo nano /etc/firewalld/firewalld.conf}
 \begin{blocksection}
     Find the \code{CleanupOnExit} option in the file and set it to \code{no}:\\
@@ -517,15 +557,15 @@ pamac-aur
 
 \subsection{FacetimeHD}
 
-//TODO current driver [link](#TODO) not working.
+//TODO current driver [link](TODO) not working.
 
 \subsection{Display brightness}
 
-https://github.com/0xbb/apple_set_os.efi
+\href{https://github.com/0xbb/apple_set_os.efi}{link}
 
-https://github.com/Dunedan/mbp-2016-linux/issues/38
-https://bugzilla.kernel.org/show_bug.cgi?id=105051#c37
-https://bugzilla.kernel.org/show_bug.cgi?id=105051#c39
+\href{https://github.com/Dunedan/mbp-2016-linux/issues/38}{link}
+\href{https://bugzilla.kernel.org/show_bug.cgi?id=105051#c37}{link}
+\href{https://bugzilla.kernel.org/show_bug.cgi?id=105051#c39}{link}
 
 \subsection{USB suspend error}
 
@@ -536,7 +576,8 @@ You may get the following sort of error after suspend/sleep:
     usb usb2-port4: cannot disable (err=-32)
 \end{codeblock}
 
-The Kernel \href{https://bugzilla.kernel.org/show_bug.cgi?id=117811}{Bug report #117811}'s thread suggest disabling USB auto-suspend.
+The Kernel \href{https://bugzilla.kernel.org/show_bug.cgi?id=117811}{Bug report \#117811}'s thread suggest disabling USB auto-suspend.
+
 \begin{itemize}[noitemsep,topsep=0pt,leftmargin=*]
     \item If you are using [TLP](https://wiki.archlinux.org/index.php/TLP):\\
         \code{nano /etc/default/tlp} and set \code{USB\_AUTOSUSPEND=0}
