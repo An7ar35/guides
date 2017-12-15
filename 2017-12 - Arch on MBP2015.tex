@@ -1,31 +1,54 @@
 % This text is released under the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) License
 % Full license available at https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
 \input{common/preamble.tex}
-\title{Arch Linux installation guide for MacBook Pro Retina}
 \color{dark}
+\backgroundsetup{
+	scale=1,
+	color=dark,
+	opacity=1,
+	angle=0,
+	contents={%
+		\includegraphics[width=\paperwidth,height=\paperheight]{img/Burst.pdf}
+	}%
+}
 \setlength{\parindent}{0em}
 \setlength{\parskip}{0.5em}
 \renewcommand{\baselinestretch}{1.2}
 
 \begin{document}
-\newgeometry{left=1cm,right=1cm,top=1cm,bottom=1.5cm}
+\pagecolor{dark}
+\color{white}
+%\BgThispage
 \sloppy
-\begin{headerborder}
-    \centering
-    \begin{LARGE}
-        Arch Linux installation guide\linebreak
-        MacBook Pro Retina mid-2015 model\linebreak
-        \raisebox{-0.2\height}{\openiconic[]}
-        \par
-    \end{LARGE}
-    \begin{tabularx}{\textwidth}{lR}
-        \cref{white}{https://an7ar35.bitbucket.io/}{\raisebox{-0.25\height}{\includegraphics[scale=0.25]{common/avatar.png}} An7ar35} (Dec 2017) &
-        \raisebox{-0.25\height}{\includegraphics[scale=0.2]{common/licenses/by-nc-sa_eu.png}}
-    \end{tabularx}
-\end{headerborder}
+\centering
+\vspace*{0.5em}
+\begin{tabularx}{0.95\linewidth}{lR}
+	\cref{white}{https://an7ar35.bitbucket.io/}{\raisebox{-0.25\height}{\includegraphics[scale=0.25]{common/avatar.png}} An7ar35} & 
+	December 2017
+\end{tabularx}
 
+\vspace*{\fill}
+\includegraphics[height=10em]{img/ArchMBP.pdf}\linebreak
+\begin{mdframed}[style=titlebox]
+	\centering
+	\begin{Huge}
+	    \industrial{Arch Linux installation guide\linebreak
+	    for\linebreak
+	    MacBook Pro Retina mid 2015 model}\par
+	\end{Huge}
+\end{mdframed}
+\vspace*{2em}
+\includegraphics[height=5em]{img/kde-logo.pdf}with KDE\par
+\vspace*{\fill}
+\begin{tabularx}{0.95\textwidth}{lR}
+	& \includegraphics[height=3em]{common/licenses/by-nc-sa_eu.pdf}
+\end{tabularx}
+\vspace*{2em}
 
-    
+\newgeometry{left=1cm,right=1cm,top=1cm,bottom=1.5cm}
+\setcounter{page}{1}
+\pagecolor{white}
+\color{dark}
 \normalsize\justify
 \tableofcontents
 \clearpage
@@ -38,6 +61,14 @@ do-overs here are the results of replacing OSX with Arch Linux (KDE) on a mid-20
 I would also advise backing up your drive using a complete bit-to-bit cloning process (unlike me, casually forgetting that step...) so that you retain a copy of everything including the recovery partition on the Mac. This way it is a one-step process to restore everything.
 
 This guide assumes a basic working knowledge of Linux command line (bash).
+
+\section{Nomenclatures}
+
+\begin{tabularx}{\textwidth}{lX}
+	\code{package-name} & Standard package \href{https://www.archlinux.org/packages/}{repository} - use \code{pacman} to install.\\
+	\code{package-name}\textsuperscript{AUR} & Arch User Repository package (\href{https://aur.archlinux.org/}{AUR}) - use \code{yaourt} to install.\\
+	\textcolor{orange}{\$} \code{...} & Command to type in at the command line prompt.
+\end{tabularx}
 
 \section{Machine Specs}
 
@@ -71,28 +102,30 @@ This guide assumes a basic working knowledge of Linux command line (bash).
 	\rowcolors{2}{gray!25}{white}
 	\begin{tabular}{lcl}
 		\rowcolor{white!50}
-		Item & Result & Note\\
+		\textbf{Item} & \textbf{Result} & \textbf{Note}\\
 		\hline\hline
-		FaceTimeHD camera & \raisebox{-0.2\height}{\color{orange}{\openiconic[]}} & Requires own driver construction\\
-		Display (IPS scaling) & \raisebox{-0.2\height}{\color{orange}{\openiconic[]}} & Mixed results without Wayland\\
+		Wifi\footnotemark[1] & \raisebox{-0.2\height}{\color{green}{\openiconic[]}} & Works out-of-the-box, some error messages.\\
+		Bluetooth & \raisebox{-0.2\height}{\color{green}{\openiconic[]}} & Uses standard \code{bluez} package.\\
+		Display (IPS scaling)\footnotemark[2] & \raisebox{-0.2\height}{\color{orange}{\openiconic[]}} & Mixed results without Wayland\\
 		Display (Backlight) & \raisebox{-0.2\height}{\color{blue}{\openiconic[]}} & Needs special EFI addon.\\
 		AMD Radeon R9 M370X & \raisebox{-0.2\height}{\color{green}{\openiconic[]}} & Open source driver works like a charm\\
-		Intel Iris Pro Graphics$^*$ & \raisebox{-0.2\height}{\color{red}{\openiconic[]}} & Disabled by default, graphic switching not working.
+		Intel Iris Pro Graphics\footnotemark[3] & \raisebox{-0.2\height}{\color{red}{\openiconic[]}} & Disabled by default, graphic switching not working.\\
+		Audio & \raisebox{-0.2\height}{\color{green}{\openiconic[]}} & Uses ALSA.\\
+		FaceTimeHD camera & \raisebox{-0.2\height}{\color{orange}{\openiconic[]}} & Requires own driver construction\\
+		Keyboard & \raisebox{-0.2\height}{\color{green}{\openiconic[]}} & ISO layout in command line but perfect in KDE.\\
+		Keyboard (Backlight) & \raisebox{-0.2\height}{\color{green}{\openiconic[]}} & Works out-of-the-box.\\
+		Keyboard \fbox{Fn} keys & \raisebox{-0.2\height}{\color{green}{\openiconic[]}} & Works out-of-the-box in KDE.
 	\end{tabular}
 \end{center}
 
+\footnotetext[1]{Error messages with default kernel module but doesn't seem to affect connections.}
+\footnotetext[2]{A workable solution can be setting the resolution to 1920x1200. The scale is good for a 15" screen.}
+\footnotetext[3]{Being stuck with using the dedicated GPU means that the battery will drain faster than when using Intel's IGU.}
 
 //Heating issues with mbp, fan control and turning off boost on the processor to keep things
 reasonable temperature-wise.
 
 \section{How-To}
-
-\subsection{Naming convention/Nomenclatures}
-
-\begin{tabularx}{\textwidth}{lX}
-	\code{package-name} & Standard package \href{https://www.archlinux.org/packages/}{repository} - use \code{pacman} to install.\\
-	\code{package-name}\textsuperscript{AUR} & Arch User Repository package (\href{https://aur.archlinux.org/}{AUR}) - use \code{yaourt} to install.
-\end{tabularx}
 
 \subsection{Packages}
 
@@ -427,6 +460,14 @@ For each of the 2 packages, \code{cd} into their respective directories and run 
 \terminalcmd{yaourt -S radeontop}
     \block{\emph{(Optional)} Monitoring utility for Radeon GPU cards.}
 
+\subsubsection{Display brightness}
+
+\href{https://github.com/0xbb/apple_set_os.efi}{link}
+
+\href{https://github.com/Dunedan/mbp-2016-linux/issues/38}{link}
+\href{https://bugzilla.kernel.org/show_bug.cgi?id=105051#c37}{link}
+\href{https://bugzilla.kernel.org/show_bug.cgi?id=105051#c39}{link}
+
 \subsubsection{Webcam}
 
 The 2015 MBP has \href{https://wiki.archlinux.org/index.php/MacBook#Facetime_HD}{Facetime HD}.
@@ -555,17 +596,7 @@ pamac-aur
 
 //TODO `brcmfmac: brcmf\_inetaddr\_changed: fail to get arp ip table err:-23` after wifi connect
 
-\subsection{FacetimeHD}
 
-//TODO current driver [link](TODO) not working.
-
-\subsection{Display brightness}
-
-\href{https://github.com/0xbb/apple_set_os.efi}{link}
-
-\href{https://github.com/Dunedan/mbp-2016-linux/issues/38}{link}
-\href{https://bugzilla.kernel.org/show_bug.cgi?id=105051#c37}{link}
-\href{https://bugzilla.kernel.org/show_bug.cgi?id=105051#c39}{link}
 
 \subsection{USB suspend error}
 
@@ -585,14 +616,6 @@ The Kernel \href{https://bugzilla.kernel.org/show_bug.cgi?id=117811}{Bug report 
         \code{sudo echo on | tee /sys/bus/usb/devices/*/power/control}
 \end{itemize}
 
-
-
-\section{Mac Recovery}
-
-xar -xf \$OSXDMG.dmg
-cd InstallMacOSX.pkg/
-dmg2img InstallESD.dmg
-sudo dd if=InstallESD.img of=/dev/sdb bs=1M
 
 
 \clearpage

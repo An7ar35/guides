@@ -363,6 +363,8 @@ standard packages.
       The [`lm_sensors`](https://wiki.archlinux.org/index.php/Lm_sensors) package used for 
       temperature monitoring is a dependency for `mesa` so will be installed with it.
       Run `sensors` to see all the temperatures.
+2. $ `yaourt -S radeontop`
+    > (Optional) Monitoring utility for Radeon GPU cards.
 
 ##### Webcam
 
@@ -371,6 +373,17 @@ Fortunately there is a reversed-engineered driver but "PC suspension is not supp
 program that is keeping the camera active is running".
 
 1. $ `yaourt -S bcwc-pcie-git`
+
+##### Other Drivers
+
+Possible missing firmware module for:
+* wd719x
+* aic94xx
+
+1. $ `pacman -S aic94xx-firmware` 
+2. $ `pacman -S wd719x-firmware` (SCSI)
+3. $ `sudo mkinitcpio -p linux` to make sure drivers are loaded
+
 
 ## System Setup III: Desktop
 
@@ -393,9 +406,17 @@ HiDPI support is terrible.
 2. $ `sudo systemctl enable sddm.service`
 3. $ `sudo systemctl start sddm.service`
 
+kde-thumbnailer-odf
+kde-thumbnailer-epub
+kde-thumbnailer-gimpsources
+
+
 [SDDM](https://wiki.archlinux.org/index.php/SDDM)
 
 //TODO auto-login
+
+`sudo systemctl enable NetworkManager.service` in KDE then restart to get wifi working on the desktop
+
 
 #### Printing/Scanning
 
@@ -405,23 +426,79 @@ HiDPI support is terrible.
 
 ## System Setup IV: Applications
 
+`flite` (missing packages causes a "text-to-speech" error - see `journalctl -b`)
+
+
+#### File system
+
+1. `ntfs-3g`
+2. `exfat-utils`
+3. `gparted` and/or `partitionmanager` (KDE)
+
+#### Firewall
+
+Install `firewalld` and start the `firewalld.service`
+
+If there is a systemd timeout [issue](https://bugzilla.redhat.com/show_bug.cgi?id=1294415#c10) on restart: 
+1. $ `sudo nano /etc/firewalld/firewalld.conf`
+    > Find the `CleanupOnExit` option in the file and set it to `no`:
+    > `CleanupOnExit=no`
+
+#### Tools/Utils
+
+p7zip
+unrar
+Ark (GUI front end for compression)
+
+#### Fonts
+
+adobe-source-code-pro
+adobe-source-sans-pro
+adobe-source-serif-pro
+ttf-mac-fonts
+
 #### Console apps
 
 `cmus`
 `wget`
 
+#####Development
+
+valgrind, cmake, clang, extra-cmake-modules, clang-tools-extra, 
+sqlitebrowser
+
 #### Desktop apps
 
-$ `yaourt -S pamac-aur`
 
-$ `pacman -S yakuake`
+##### Pacman
 
+yakuake, thunderbird, firefox, cairo-dock, cairo-dock-plugins, deja-dup, truecrypt, veracrypt, 
+redshift, plasma5-applets-redshift-control, 
+
+
+##### AUR (Yaourt)
+
+pamac-aur
+
+//discord
 
 ## Bugs
 
 //TODO `kfd kfd: kgd2kfd_probe failed` at start up
 
 //TODO `brcmfmac: brcmf_inetaddr_changed: fail to get arp ip table err:-23` after wifi connect
+
+#### FacetimeHD
+
+//TODO current driver [link](#TODO) not working.
+
+#### Display brightness
+
+https://github.com/0xbb/apple_set_os.efi
+
+https://github.com/Dunedan/mbp-2016-linux/issues/38
+https://bugzilla.kernel.org/show_bug.cgi?id=105051#c37
+https://bugzilla.kernel.org/show_bug.cgi?id=105051#c39
 
 #### USB suspend error
 

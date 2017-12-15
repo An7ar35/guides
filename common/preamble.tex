@@ -19,6 +19,11 @@
     ]
     \newfontfamily\openiconic{open-iconic}[Path = fonts/]
     \newfontfamily\devicon{devicon}[Path = fonts/]
+    \newfontfamily\chicago{ChicagoFLF.ttf}[Path = fonts/chicago/]
+    \newfontfamily{\industrial}[
+    	Path = fonts/industrial/, 
+    	ItalicFont = Industrial-Italic.otf]
+    	{Industrial-Regular.otf}
     \newcommand{\icon}[2]{\raisebox{-0.175\height}{\textcolor{#1}{\openiconic{#2}}}}
 \usepackage{ragged2e} %text alignment
 \usepackage[table,xcdraw,usenames,dvipsnames]{xcolor}
@@ -44,10 +49,22 @@
 \usepackage{hyperref} % Hyperlink references
     \hypersetup{colorlinks=true,linkcolor=dark,urlcolor=MidnightBlue,pdfborder=0 0 0}
 \usepackage{environ}
+\usepackage[pages=some]{background}
+%\usepackage{memoir}
 \usepackage{mdframed} % minipage box
     \newmdenv{allborders}
     \newmdenv[topline=false,leftline=false,rightline=false,linecolor=linegrey]{bottomborder}
     \newmdenv[topline=false,leftline=false,rightline=false,linecolor=dark,backgroundcolor=dark,fontcolor=white]{headerborder}
+    \mdfdefinestyle{titlebox}{
+		leftline=false,
+    	rightline=false,
+    	innertopmargin=2mm,
+    	innerbottommargin=2mm,
+    	linewidth=1pt,
+    	backgroundcolor=dark, 
+    	fontcolor=white, 
+    	linecolor=white
+    }
     \mdfdefinestyle{commentbox}{
         topline=false,
         rightline=false,
