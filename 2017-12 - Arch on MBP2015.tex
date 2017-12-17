@@ -107,11 +107,11 @@ This guide assumes a basic working knowledge of Linux command line (bash).
 		Wifi\footnotemark[1] & \raisebox{-0.2\height}{\color{green}{\openiconic[]}} & Works out-of-the-box, some error messages.\\
 		Bluetooth & \raisebox{-0.2\height}{\color{green}{\openiconic[]}} & Uses standard \code{bluez} package.\\
 		Display (IPS scaling)\footnotemark[2] & \raisebox{-0.2\height}{\color{orange}{\openiconic[]}} & Mixed results without Wayland\\
-		Display (Backlight) & \raisebox{-0.2\height}{\color{blue}{\openiconic[]}} & Needs special EFI addon.\\
+		Display (Backlight) & \raisebox{-0.2\height}{\color{blue}{\openiconic[]}} & Needs a kernel patch\footnotemark[3] for \code{apple-gmux}.\\
 		AMD Radeon R9 M370X & \raisebox{-0.2\height}{\color{green}{\openiconic[]}} & Open source driver works like a charm\\
-		Intel Iris Pro Graphics\footnotemark[3] & \raisebox{-0.2\height}{\color{red}{\openiconic[]}} & Disabled by default, graphic switching not working.\\
+		Intel Iris Pro Graphics\footnotemark[4] & \raisebox{-0.2\height}{\color{red}{\openiconic[]}} & Disabled by default, graphic switching not working.\\
 		Audio & \raisebox{-0.2\height}{\color{green}{\openiconic[]}} & Uses ALSA.\\
-		FaceTimeHD camera & \raisebox{-0.2\height}{\color{orange}{\openiconic[]}} & Requires own driver construction\\
+		FaceTimeHD camera & \raisebox{-0.2\height}{\color{orange}{\openiconic[]}} & Requires firmware and driver from AUR. Suspend issues.\\
 		Keyboard & \raisebox{-0.2\height}{\color{green}{\openiconic[]}} & ISO layout in command line but perfect in KDE.\\
 		Keyboard (Backlight) & \raisebox{-0.2\height}{\color{green}{\openiconic[]}} & Works out-of-the-box.\\
 		Keyboard \fbox{Fn} keys & \raisebox{-0.2\height}{\color{green}{\openiconic[]}} & Works out-of-the-box in KDE.
@@ -120,7 +120,8 @@ This guide assumes a basic working knowledge of Linux command line (bash).
 
 \footnotetext[1]{Error messages with default kernel module but doesn't seem to affect connections.}
 \footnotetext[2]{A workable solution can be setting the resolution to 1920x1200. The scale is good for a 15" screen.}
-\footnotetext[3]{Being stuck with using the dedicated GPU means that the battery will drain faster than when using Intel's IGU.}
+\footnotetext[3]{Patch needs to be re-applied after any kernel updates at the moment.}
+\footnotetext[4]{Being stuck with using the dedicated GPU means that the battery will drain faster than when using Intel's IGU.}
 
 //Heating issues with mbp, fan control and turning off boost on the processor to keep things
 reasonable temperature-wise.
@@ -194,7 +195,7 @@ The assumption here is that the hard drive where everything will be installed to
 \end{blocksection}
 \terminalcmd{cryptsetup --verbose --verify-passphrase --cipher aes-xts-plain64 --key-size 512 --hash sha512 --iter-time 5000 --use-random luksFormat /dev/sda3}
 	\block{Sets up the crypto volume.}
-\terminalcmd{cryptsetup open --type luks /dev/sda2 mctoasty}
+\terminalcmd{cryptsetup open --type luks /dev/sda3 mctoasty}
 	\block{\code{mctoasty} is the mounted name of the crypto volume. Can be changed to whatever is preferred.}
 
 \subsubsection{Create crypto volume partitions}
@@ -465,18 +466,30 @@ For each of the 2 packages, \code{cd} into their respective directories and run 
 \href{https://github.com/0xbb/apple_set_os.efi}{link}
 
 \href{https://github.com/Dunedan/mbp-2016-linux/issues/38}{link}
+
+
 \href{https://bugzilla.kernel.org/show_bug.cgi?id=105051#c37}{link}
+If the brightness control do not work after a kernel update the patch must be run again to get the functionality back. Hopefully this won''t be an issue in the future.
+
+
 \href{https://bugzilla.kernel.org/show_bug.cgi?id=105051#c39}{link}
 
 \subsubsection{Webcam}
 
 The 2015 MBP has \href{https://wiki.archlinux.org/index.php/MacBook#Facetime_HD}{Facetime HD}.
-Fortunately there is a reversed-engineered driver but "PC suspension is not supported if a 
+Fortunately there is a \href{https://github.com/patjak/bcwc_pcie}{reversed-engineered driver} but "PC suspension is not supported if a 
 program that is keeping the camera active is running".
 
-DOES NOT WORK!
+To make it work, first install the firmware then the driver from AUR:
 
+\terminalcmd{yaourt -S facetimehd-firmware}
+	\block{Installs the firmware alone.}
 \terminalcmd{yaourt -S bcwc-pcie-git}
+	\block{Gets the driver.}
+
+To test the webcam, \code{mplayer tv://} or the \lq \textit{Qt 4VL Test Utility}\rq\ can be used inside KDE.
+
+//TODO mention issues with Kamoso, skype, etc...
 
 \subsubsection{Other Drivers}
 
@@ -495,40 +508,46 @@ Possible missing firmware module for:
 
 Wayland support as of Dec 2017 on KDE is beta at best. Scaling in nice but buggy as hell displaying artefacts. Until that gets a lot better Xorg is the default choice as display managers go even if HiDPI support is terrible. 
 
-\subsection{Display manager (\href{https://wiki.archlinux.org/index.php/xorg}{Xorg})}
+\subsection{Display server (\href{https://wiki.archlinux.org/index.php/xorg}{Xorg})}
 
-\terminalcmd{xorg, xorg-server xorg-xinit}
+\terminalcmd{sudo pacman -S xorg, xorg-server xorg-xinit}
 
 \subsection{Desktop Environment (\href{https://wiki.archlinux.org/index.php/KDE}{KDE})}
 
-\subsubsection{What works}
-
-\begin{itemize}[noitemsep,topsep=0pt,leftmargin=*]
-    \item Keyboard and the backlight
-    \item Bluetooth? //TODO check
-\end{itemize}
+A display manager (\href{https://wiki.archlinux.org/index.php/SDDM}{SDDM}) is installed along with KDE to make it easy to automatically run KDE when starting a user session and provide a GUI login too.
 
 \terminalcmd{sudo pacman -S plasma kde-applications sddm systemd-kcm}
 \terminalcmd{sudo systemctl enable sddm.service}
 \terminalcmd{sudo systemctl start sddm.service}
 
-kde-thumbnailer-odf\\
-kde-thumbnailer-epub\\
-kde-thumbnailer-gimpsources\\
+Auto-login can be configured inside KDE's \lq System Settings\rq\ panel (\lq Startup \& Shutdown\rq\ \rightarrow\ \lq Login Screen (SDDM)\rq\ \rightarrow\ \lq Advanced\rq\ tab).
 
+\terminalcmd{sudo pacman -S xdg-user-dirs}
+\begin{blocksection}
+	\blockheader{Optional} 
+	Create all the default \href{https://wiki.archlinux.org/index.php/XDG_user_directories}{user directories} such as \lq Downloads\rq\ , \lq Music\rq\  , etc...
+\end{blocksection}
 
-\href{https://wiki.archlinux.org/index.php/SDDM}{SDDM}
+\subsection{Network manager (Wifi)}
+\terminalcmd{sudo systemctl enable NetworkManager.service}
+	\block{Enables the network service. GUI network connections should work after reboot.}
 
-//TODO auto-login
+\subsection{GUI package manager}
 
-\code{sudo systemctl enable NetworkManager.service} in KDE then restart to get wifi working on the desktop
+\href{https://wiki.manjaro.org/index.php?title=Pamac}{Pamac} is a nice package manager with AUR support. It can be installed with:
 
+\terminalcmd{yaourt -S pamac-aur}
+	\block{AUR support can be explicitly enabled inside the application's settings in the AUR tab.}
 
 \subsection{Printing/Scanning}
 
 \terminalcmd{sudo pacman -S cups print-manager}
 \terminalcmd{//TODO scanning}
 
+\subsection{Extras}
+
+\terminalcmd{sudo pacman -S kde-thumbnailer-odf kde-thumbnailer-epub kde-thumbnailer-gimpsources}
+\block{Adds thumbnail support to ODF, EPUB and gimp source files. Enable in Dolphin's settings.}
 
 \section{System Setup IV: Applications}
 
@@ -537,19 +556,23 @@ kde-thumbnailer-gimpsources\\
 
 \subsection{File system}
 
-\code{ntfs-3g}
-\code{exfat-utils}
-\code{gparted} and/or \code{partitionmanager} (KDE)
+\terminalcmd{sudo pacman -S ntfs-3g exfat-utils}
+	\block{Enables access to NTFS and ExFAT file systems.}
+\terminalcmd{sudo pacman -S gparted}
+	\block{Partition manager. Alternatively there is also \code{partitionmanager} (KDE)}
 
 \subsection{Firewall}
 
 Install \code{firewalld} and start the \code{firewalld.service}
 
-If there is a systemd timeout \href{https://bugzilla.redhat.com/show_bug.cgi?id=1294415#c10}{issue} on restart: 
+If there is a systemd timeout \href{https://bugzilla.redhat.com/show_bug.cgi?id=1294415#c10}{issue} on restart, do:
+
 \terminalcmd{sudo nano /etc/firewalld/firewalld.conf}
 \begin{blocksection}
-    Find the \code{CleanupOnExit} option in the file and set it to \code{no}:\\
-    \code{CleanupOnExit=no}
+    Find the \code{CleanupOnExit} option in the file and set it to `\code{no}':\\
+    \begin{codeblock}
+    	CleanupOnExit=no
+    \end{codeblock}
 \end{blocksection}
 
 \subsection{Tools/Utils}
@@ -584,11 +607,44 @@ yakuake, thunderbird, firefox, cairo-dock, cairo-dock-plugins, deja-dup, truecry
 redshift, plasma5-applets-redshift-control, 
 
 
-\subsubsection{AUR (Yaourt)}
-
-pamac-aur
 
 //discord
+
+\section{Troubleshooting}
+
+\subsection{Boot partition recognition is slow}
+
+Usually caused by booting a OSX drive or creating one with the recovery process (\fbox{Cmd}+\fbox{R})
+
+Reset PRAM
+
+https://support.apple.com/en-us/HT204063
+
+\subsection{Boot partition not detected after PRAM reset}
+
+Boot from the Arch setup USB (see section `Making a bootable USB').
+
+Mount all the partitions again (section `7.3.3 Mount all the partition') without making the directories:
+
+\terminalcmd{mount /dev/mapper/vg0-root /mnt}
+\terminalcmd{mount /dev/mapper/vg0-home /mnt/home}
+\terminalcmd{mount /dev/sda2 /mnt/boot}
+\terminalcmd{mount /dev/sda1 /mnt/boot/efi}
+\terminalcmd{swapon /dev/mapper/vg0-swap}
+
+Get into the \code{arch-chroot} environment and reinstall GRUB:
+
+\terminalcmd{arch-chroot /mnt /bin/bash}
+\terminalcmd{run mkinitcpio -p linux}
+\terminalcmd{run grub-install}
+\terminalcmd{grub-mkconfig -o /boot/grub/grub.cfg}
+
+Exit chroot environment and shutdown:
+
+\terminalcmd{exit}
+\terminalcmd{shutdown now}
+
+Remove the USB stick and boot up.
 
 \section{Bugs}
 
