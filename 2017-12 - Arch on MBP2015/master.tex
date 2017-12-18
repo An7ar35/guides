@@ -1,6 +1,6 @@
 % This text is released under the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) License
 % Full license available at https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
-\input{common/preamble.tex}
+\input{preamble.tex}
 \color{dark}
 \backgroundsetup{
 	scale=1,
@@ -23,7 +23,7 @@
 \centering
 \vspace*{0.5em}
 \begin{tabularx}{0.95\linewidth}{lR}
-	\cref{white}{https://an7ar35.bitbucket.io/}{\raisebox{-0.25\height}{\includegraphics[scale=0.25]{common/avatar.png}} An7ar35} & 
+	\cref{white}{https://an7ar35.bitbucket.io/}{\raisebox{-0.25\height}{\includegraphics[scale=0.25]{../common/graphics/avatar.png}} An7ar35} & 
 	December 2017
 \end{tabularx}
 
@@ -32,16 +32,16 @@
 \begin{mdframed}[style=titlebox]
 	\centering
 	\begin{Huge}
-	    \industrial{Arch Linux installation guide\linebreak
-	    for\linebreak
-	    MacBook Pro Retina mid 2015 model}\par
+		\industrial{Arch Linux installation guide\linebreak
+			for\linebreak
+			MacBook Pro Retina mid 2015 model}\par
 	\end{Huge}
 \end{mdframed}
 \vspace*{2em}
 \includegraphics[height=5em]{img/kde-logo.pdf}with KDE\par
 \vspace*{\fill}
 \begin{tabularx}{0.95\textwidth}{lR}
-	& \includegraphics[height=3em]{common/licenses/by-nc-sa_eu.pdf}
+	& \includegraphics[height=3em]{../common/licenses/by-nc-sa_eu.pdf}
 \end{tabularx}
 \vspace*{2em}
 
@@ -78,22 +78,22 @@ This guide assumes a basic working knowledge of Linux command line (bash).
 	Processor & \cbullet{2.5GHz quad-core Intel Core i7 processor (Turbo Boost up to 3.7GHz) with 6MB shared L3 cache} \\\hline
 	RAM       & · 16GB of 1600MHz DDR3L memory \\\hline
 	GPU       & · Intel Iris Pro Graphics, \newline
-				· AMD Radeon R9 M370X with 2GB of GDDR5 memory\\\hline
+	· AMD Radeon R9 M370X with 2GB of GDDR5 memory\\\hline
 	Storage   & · 512GB PCIe-based flash \\\hline
 	Webcam    & · 720p FaceTime HD camera \\\hline
 	Network   & · 802.11ac Wi‑Fi wireless networking; IEEE 802.11a/b/g/n compatible, \newline
-			    · Bluetooth 4.0 wireless technology \\
+	· Bluetooth 4.0 wireless technology \\
 	\hline
 \end{tabularx}
 
 \section{Results}
 
 \begin{small}\fcolorbox{linegrey}{white}{
-	\textcolor{textgrey}{\textbf{Legend: }}
-	\raisebox{-0.2\height}{\color{green}{\openiconic[]}} Works out-of-the-box or with few steps, 
-	\raisebox{-0.2\height}{\color{blue}{\openiconic[]}} Requires some work, 
-	\raisebox{-0.2\height}{\color{orange}{\openiconic[]}} Not fully working, 
-	\raisebox{-0.2\height}{\color{red}{\openiconic[]}} Broken.}
+		\textcolor{textgrey}{\textbf{Legend: }}
+		\raisebox{-0.2\height}{\color{green}{\openiconic[]}} Works out-of-the-box or with few steps, 
+		\raisebox{-0.2\height}{\color{blue}{\openiconic[]}} Requires some work, 
+		\raisebox{-0.2\height}{\color{orange}{\openiconic[]}} Not fully working, 
+		\raisebox{-0.2\height}{\color{red}{\openiconic[]}} Broken.}
 \end{small}
 
 //TODO
@@ -158,7 +158,7 @@ Make a copy of the colour profile file(s) on the mac to a USB stick. It will be 
 \terminalcmd{diskutil unmountDisk diskX}
 \block{Where \code{X} is your target USB drive number (use \code{diskutil list} for an overview of all connected drives to find out).}
 \terminalcmd{sudo dd if=/Users/\$USERNAME/Downloads/archlinux.iso of=/dev/diskX bs=16M}
-\block{Replace \code{\$USERNAME} with your username on the mac and replace \code{X} with the USB drive's number.}
+\block{Replace \textcolor{codekeyword1}{\$USERNAME} with your username on the mac and replace \code{X} with the USB drive's number.}
 
 \section{Installation}
 
@@ -185,36 +185,36 @@ The assumption here is that the hard drive where everything will be installed to
 \begin{blocksection}
 	\blockheader{Partition layout with just Linux}
 	\textit{Warning: this will erase every thing including the recovery partition for OSX. \\
-	No easy way to go back after this without a bit-to-bit HDD clone}
+		No easy way to go back after this without a bit-to-bit HDD clone}
 	\begin{enumerate}
- 		\item 100M partition `EFI' (Hex \#\code{ef00})
-	 	\item 250M partition `Boot' (Hex \#\code{8300})
-	 	\item 100\% remainder of the space for the crypto volume (Hex \#\code{8300})
+		\item 100M partition `EFI' (Hex \#\code{ef00})
+		\item 250M partition `Boot' (Hex \#\code{8300})
+		\item 100\% remainder of the space for the crypto volume (Hex \#\code{8300})
 	\end{enumerate}
 	The root and home partition will be created later in the crypto volume
 \end{blocksection}
 \terminalcmd{cryptsetup --verbose --verify-passphrase --cipher aes-xts-plain64 --key-size 512 --hash sha512 --iter-time 5000 --use-random luksFormat /dev/sda3}
-	\block{Sets up the crypto volume.}
+\block{Sets up the crypto volume.}
 \terminalcmd{cryptsetup open --type luks /dev/sda3 mctoasty}
-	\block{\code{mctoasty} is the mounted name of the crypto volume. Can be changed to whatever is preferred.}
+\block{\code{mctoasty} is the mounted name of the crypto volume. Can be changed to whatever is preferred.}
 
 \subsubsection{Create crypto volume partitions}
 
 \terminalcmd{pvcreate /dev/mapper/mctoasty}
 \terminalcmd{vgcreate vg0 /dev/mapper/mctoasty}
 \terminalcmd{lvcreate --size 16G vg0 --name swap}
-    \block{Generally swap size value is set to the amount of RAM.}
+\block{Generally swap size value is set to the amount of RAM.}
 \terminalcmd{lvcreate --size 50GB vg0 --name root}
-	\block{Adjust root's size as required.}
+\block{Adjust root's size as required.}
 \item \terminalcmd{lvcreate -l +100\%FREE vg0 --name home}
-    \block{Creates the home parition with the remainder of the free space.}
+\block{Creates the home parition with the remainder of the free space.}
 
 \subsubsection{Formatting all the partitions}
 
 \terminalcmd{mkfs.vfat -F32 /dev/sda1}
-	\block{EFI partition}
+\block{EFI partition}
 \terminalcmd{mkfs.ext2 /dev/sda2}
-	\block{Boot partition}
+\block{Boot partition}
 \terminalcmd{mkswap /dev/mapper/vg0-swap}
 \terminalcmd{mkfs.ext4 /dev/mapper/vg0-root}
 \terminalcmd{mkfs.ext4 /dev/mapper/vg0-home}
@@ -234,15 +234,15 @@ The assumption here is that the hard drive where everything will be installed to
 
 \terminalcmd{pacstrap /mnt base base-devel grub-efi-x86\_64 git efibootmgr bash-completion dialog wpa\_supplicant}
 \begin{blocksection}
-    Base packages along with GRUB and the EFI boot manager, git (will be useful later), bash completion and the stuff needed to keep the Wifi device in working order after reboot.
+	Base packages along with GRUB and the EFI boot manager, git (will be useful later), bash completion and the stuff needed to keep the Wifi device in working order after reboot.
 \end{blocksection}
 
 \subsection{Generating fstab}
 
 \terminalcmd{genfstab -pU /mnt >> /mnt/etc/fstab}
 \begin{blocksection}
-    \blockheader{Important!}
-    This generates the fstab. i.e.: It saves our mounted partitions and swap configuration for persistence after a reboot. If you miss this step you'll have to reboot with the USB, mount everything again and then generate the fstab file.
+	\blockheader{Important!}
+	This generates the fstab. i.e.: It saves our mounted partitions and swap configuration for persistence after a reboot. If you miss this step you'll have to reboot with the USB, mount everything again and then generate the fstab file.
 \end{blocksection}
 \terminalcmd{arch-chroot /mnt /bin/bash}
 
@@ -250,9 +250,9 @@ The assumption here is that the hard drive where everything will be installed to
 
 \terminalcmd{ln -s /usr/share/zoneinfo/\$ZONE/\$REGION /etc/localtime}
 \begin{blocksection}
-    Replace \textcolor{codekeyword1}{\$ZONE} with yours from \code{/usr/share/zoneinfo/}\\
-    Replace \textcolor{codekeyword1}{\$REGION} with yours from \code{/usr/share/zoneinfo/\$ZONE/}\\
-    e.g.: \code{/usr/share/zoneinfo/Europe/London}
+	Replace \textcolor{codekeyword1}{\$ZONE} with yours from \code{/usr/share/zoneinfo/}\\
+	Replace \textcolor{codekeyword1}{\$REGION} with yours from \code{/usr/share/zoneinfo/\$ZONE/}\\
+	e.g.: \code{/usr/share/zoneinfo/Europe/London}
 \end{blocksection}
 \terminalcmd{hwclock --systohc --utc}
 
@@ -261,32 +261,32 @@ The assumption here is that the hard drive where everything will be installed to
 \terminalcmd{echo \$HOSTNAME > /etc/hostname}
 \terminalcmd{nano /etc/hosts}
 \begin{blocksection}
-    Add the hostname at the end of each of the relevant lines in this file for completion's sake. Replace \textcolor{codekeyword1}{\$HOSTNAME} by the hostname you want to computer to have.
+	Add the hostname at the end of each of the relevant lines in this file for completion's sake. Replace \textcolor{codekeyword1}{\$HOSTNAME} by the hostname you want to computer to have.
 \end{blocksection}
 
 \subsection{Basic fonts}
 
 \terminalcmd{pacman -S terminus-font ttf-dejavu ttf-liberation}
 \begin{blocksection}
-    The terminus font will be used to make the console font more \href{https://wiki.archlinux.org/index.php/HiDPI#Linux_console}{readable} on the HiDPI display.
+	The terminus font will be used to make the console font more \href{https://wiki.archlinux.org/index.php/HiDPI#Linux_console}{readable} on the HiDPI display.
 \end{blocksection}
 
 \subsection{Locale}
 
 \terminalcmd{locale-gen}
-    \block{Generates the locale file}
+\block{Generates the locale file}
 \terminalcmd{nano /etc/local.conf}
-    \block{Edit the locale configuration and delete the hash in front of the desired locale.}
+\block{Edit the locale configuration and delete the hash in front of the desired locale.}
 \terminalcmd{local-gen}
-    \block{Needs to run again to apply the changes made in the previous step.}
+\block{Needs to run again to apply the changes made in the previous step.}
 \terminalcmd{nano /etc/locale.conf}
 \begin{blocksection}
-    To set permanent locale settings add the lines:\\
-    \begin{codeblock}
-        LANG=en\_GB.UTF-8\\
-        LANGUAGE=en\_GB\\
-        LC\_ALL=C
-    \end{codeblock}
+	To set permanent locale settings add the lines:\\
+	\begin{codeblock}
+		LANG=en\_GB.UTF-8\\
+		LANGUAGE=en\_GB\\
+		LC\_ALL=C
+	\end{codeblock}
 \end{blocksection}
 
 \subsection{Console keymap and font}
@@ -297,55 +297,55 @@ For font maps check the \href{https://wiki.archlinux.org/index.php/fonts#Persist
 
 \terminalcmd{nano /etc/vconsole.conf}
 \begin{blocksection}
-    To set permanent setting for the console add the lines:\\
-    \begin{codeblock}
-    KEYMAP=uk\\
-    FONT=ter-228n\\
-    FONT\_MAP=8859-1
-    \end{codeblock}
+	To set permanent setting for the console add the lines:\\
+	\begin{codeblock}
+		KEYMAP=uk\\
+		FONT=ter-228n\\
+		FONT\_MAP=8859-1
+	\end{codeblock}
 \end{blocksection}
 
 \subsection{Root/User Accounts}
 
 \terminalcmd{passwd}
-    \block{Set the root password.}
+\block{Sets the root password.}
 \terminalcmd{useradd -m -g users -G wheel -s /bin/bash \$USERNAME}
-    \block{Adds a user. Replace \$USERNAME with whatever user name you which to use.}
+\block{Adds a user. Replace \textcolor{codekeyword1}{\$USERNAME} with whatever user name you which to use.}
 \terminalcmd{passwd \$USERNAME}
-    \block{Sets the user's password.}
+\block{Sets the user's password.}
 
 \subsection{Initial RAM Environment Configuration [\href{https://wiki.archlinux.org/index.php/mkinitcpio}{\texttt{mkinitcpio}}]}
 
 \terminalcmd{nano /etc/mkinitcpio.conf}
 \begin{blocksection}
-    In the file do the following:
-    \begin{itemize}[noitemsep,topsep=0pt,leftmargin=*]
-        \item In 'MODULES:
-        \begin{enumerate}
-            \item Add `ext4`
-        \end{enumerate}
-        \item In 'HOOKS':
-        \begin{enumerate}
-            \item Add \code{encrypt} and \code{lvm2} before \code{filesystems}
-            \item Add \code{consolefont} right after \code{autodetect}\\
-                  (to avoid squinting at the crypto volume password prompt)
-            \item Move \code{keyboard} right after \code{consolefont}
-        \end{enumerate}
-    \end{itemize}
-    HOOKS should be ordered as such in the end:\\
-    \code{HOOKS=(base udev autodetect consolefont keyboard modconf block encrypt lvm2 filesystems fsck)}
+	In the file do the following:
+	\begin{itemize}[noitemsep,topsep=0pt,leftmargin=*]
+		\item In 'MODULES:
+		\begin{enumerate}
+			\item Add `ext4`
+		\end{enumerate}
+		\item In 'HOOKS':
+		\begin{enumerate}
+			\item Add \code{encrypt} and \code{lvm2} before \code{filesystems}
+			\item Add \code{consolefont} right after \code{autodetect}\\
+			(to avoid squinting at the crypto volume password prompt)
+			\item Move \code{keyboard} right after \code{consolefont}
+		\end{enumerate}
+	\end{itemize}
+	HOOKS should be ordered as such in the end:\\
+	\code{HOOKS=(base udev autodetect consolefont keyboard modconf block encrypt lvm2 filesystems fsck)}
 \end{blocksection}
-        
+
 \terminalcmd{mkinitcpio -p linux}
-    \block{Regenerates the initrd image.}
+\block{Regenerates the initrd image.}
 
 \subsection{GRUB boot loader}
 
 \terminalcmd{grub-install}
 \terminalcmd{nano /etc/default/grub}
 \begin{blocksection}
-    At line with \code{GRUB\_CMDLINE\_LINUX} add the arguments so that it becomes\\
-    \code{GRUB\_CMDLINE\_LINUX="cryptdevice=/dev/sda3:luks:allow-discards"}
+	At line with \code{GRUB\_CMDLINE\_LINUX} add the arguments so that it becomes\\
+	\code{GRUB\_CMDLINE\_LINUX="cryptdevice=/dev/sda3:luks:allow-discards"}
 \end{blocksection}
 \terminalcmd{grub-mkconfig -o /boot/grub/grub.cfg}
 
@@ -366,14 +366,14 @@ Reconnect to your wifi with \code{sudo wifi-menu}
 
 \terminalcmd{nano /etc/pacman.conf}
 \begin{blocksection}
-    Uncomment the multilib lines (i.e. remove the leading \code{\#}):
-    \begin{codeblock}
-        \#[multilib]\\
-        \#Include = /etc/pacman.d/mirrorlist
-    \end{codeblock}
+	Uncomment the multilib lines (i.e. remove the leading \code{\#}):
+	\begin{codeblock}
+		\#[multilib]\\
+		\#Include = /etc/pacman.d/mirrorlist
+	\end{codeblock}
 \end{blocksection}
 \terminalcmd{pacman -Syuu}
-    \block{Updates the cache}
+\block{Updates the cache}
 
 \subsection{AUR package manager}
 
@@ -381,53 +381,53 @@ From your home directory (\code{cd \textasciitilde}):
 
 \terminalcmd{mkdir -p git-repos/system-builds}
 \terminalcmd{cd git-repos/system-builds}
-    \block{Or whatever directory chosen to clone the repositories into.}
+\block{Or whatever directory chosen to clone the repositories into.}
 \terminalcmd{git clone https://aur.archlinux.org/package-query.git}
-    \block{Required for \href{https://github.com/archlinuxfr/yaourt}{Yaourt}}
+\block{Required for \href{https://github.com/archlinuxfr/yaourt}{Yaourt}}
 \terminalcmd{git clone https://aur.archlinux.org/yaourt.git}
-    \block{Easy AUR package installations from the console.}
+\block{Easy AUR package installations from the console.}
 
 For each of the 2 packages, \code{cd} into their respective directories and run the following command to install:
 
 \terminalcmd{makepkg -si}
-    \block{e.g.: \code{cd package-query} then \code{makepkg -si}}
+\block{e.g.: \code{cd package-query} then \code{makepkg -si}}
 
 \subsection{Console-Fu}
 
 \terminalcmd{yaourt -S hstr-git}
-    \block{This is a replacement on \href{https://github.com/dvorka/hstr}{steroids} for the console's \fbox{ctrl}+\fbox{r}}
+\block{This is a replacement on \href{https://github.com/dvorka/hstr}{steroids} for the console's \fbox{ctrl}+\fbox{r}}
 \terminalcmd{hh --show-configuration >> ~/.bashrc}
-    \block{Adds the config options for HSTR to your bash profile and auto-starts hh on login.}
+\block{Adds the config options for HSTR to your bash profile and auto-starts hh on login.}
 \terminalcmd{pacman -S powertop htop}
-    \block{Installs 2 of the most basic and useful monitoring tools in linux.}
-    
+\block{Installs 2 of the most basic and useful monitoring tools in linux.}
+
 \subsection{Power management}
 
 \terminalcmd{yaourt -S laptop-mode-tools}
-    \block{All the laptop-centric \href{https://wiki.archlinux.org/index.php/Laptop_Mode_Tools}{power saving} goodies}
+\block{All the laptop-centric \href{https://wiki.archlinux.org/index.php/Laptop_Mode_Tools}{power saving} goodies}
 \terminalcmd{sudo systemctl enable laptop-mode.service}
-    \block{Turns on the service} 
+\block{Turns on the service} 
 \terminalcmd{pacman -S acpid}
-    \block{\emph{(Optional)} \href{https://wiki.archlinux.org/index.php/Acpid}{Daemon} for delivering ACPI events.}
+\block{\emph{(Optional)} \href{https://wiki.archlinux.org/index.php/Acpid}{Daemon} for delivering ACPI events.}
 
 \subsection{Hardware}
 
 \subsubsection{Fans}
 
 \terminalcmd{yaourt -S macfanctld}
-    \block{\href{https://github.com/MikaelStrom/macfanctld}{macfanctld}\textsuperscript{AUR} controls the mbp fans.}
+\block{\href{https://github.com/MikaelStrom/macfanctld}{macfanctld}\textsuperscript{AUR} controls the mbp fans.}
 \terminalcmd{sudo systemctl enable macfanctld.service}
-    \block{Turns on the service}
+\block{Turns on the service}
 
 \subsubsection{Processor}
 
 \terminalcmd{pacman -S intel-ucode}
-    \block{For intel's \href{https://wiki.archlinux.org/index.php/microcode}{microcode} update.}
+\block{For intel's \href{https://wiki.archlinux.org/index.php/microcode}{microcode} update.}
 \terminalcmd{grub-mkconfig -o /boot/grub/grub.cfg}
-    \block{Need to update grub so that it loads the Microcode updates at boot}
+\block{Need to update grub so that it loads the Microcode updates at boot}
 \terminalcmd{yaourt -S msr-tools}
-    \block{\href{https://01.org/msr-tools}{MSR-Tools} will be used to turn off boost on the processor from a script.}
-    
+\block{\href{https://01.org/msr-tools}{MSR-Tools} will be used to turn off boost on the processor from a script.}
+
 \subsubsection{Sound}
 
 \href{https://wiki.archlinux.org/index.php/ALSA}{Alsa} works without issues.
@@ -435,10 +435,10 @@ For each of the 2 packages, \code{cd} into their respective directories and run 
 \terminalcmd{sudo pacman -S alsa-utils alsa-plugins}
 \terminalcmd{alsamixer}
 \begin{blocksection}
-    Make sure your current sound card is the "HDA Intel PCH" and that your master volume is up and unmuted (mute=MM, unmuted=00 at the bottom of the volume bar. You can use the \fbox{M} key on the keyboard to toggle mute).
+	Make sure your current sound card is the "HDA Intel PCH" and that your master volume is up and unmuted (mute=MM, unmuted=00 at the bottom of the volume bar. You can use the \fbox{M} key on the keyboard to toggle mute).
 \end{blocksection}
 \terminalcmd{speaker-test -c 2}
-    \block{To make sure the sound works.}
+\block{To make sure the sound works.}
 
 
 \textbf{Note}: The internal speaker might not be disabled when using the headphone jack. To solve this, enable "Auto-mute" in \code{alsamixer}.
@@ -454,12 +454,12 @@ For each of the 2 packages, \code{cd} into their respective directories and run 
 \subsubsection{Video}
 \terminalcmd{sudo pacman -S mesa xf86-video-amdgpu vulkan-radeon lib32-mesa}
 \begin{blocksection}
-    Installs the open source drivers for the ATI GPU along with the 32bit libs and the Vulkan drivers.\\
-    The \href{https://wiki.archlinux.org/index.php/Lm_sensors}{\code{lm\_sensors}} package used for temperature monitoring is a dependency for \code{mesa} so will be installed with it.\\
-    Run \code{sensors} to see all the temperatures.
+	Installs the open source drivers for the ATI GPU along with the 32bit libs and the Vulkan drivers.\\
+	The \href{https://wiki.archlinux.org/index.php/Lm_sensors}{\code{lm\_sensors}} package used for temperature monitoring is a dependency for \code{mesa} so will be installed with it.\\
+	Run \code{sensors} to see all the temperatures.
 \end{blocksection}
 \terminalcmd{yaourt -S radeontop}
-    \block{\emph{(Optional)} Monitoring utility for Radeon GPU cards.}
+\block{\emph{(Optional)} Monitoring utility for Radeon GPU cards.}
 
 \subsubsection{Display brightness}
 
@@ -483,9 +483,9 @@ program that is keeping the camera active is running".
 To make it work, first install the firmware then the driver from AUR:
 
 \terminalcmd{yaourt -S facetimehd-firmware}
-	\block{Installs the firmware alone.}
+\block{Installs the firmware alone.}
 \terminalcmd{yaourt -S bcwc-pcie-git}
-	\block{Gets the driver.}
+\block{Gets the driver.}
 
 To test the webcam, \code{mplayer tv://} or the \lq \textit{Qt 4VL Test Utility}\rq\ can be used inside KDE.
 
@@ -495,14 +495,14 @@ To test the webcam, \code{mplayer tv://} or the \lq \textit{Qt 4VL Test Utility}
 
 Possible missing firmware module for:
 \begin{itemize}[noitemsep,topsep=0pt,leftmargin=*]
-    \item wd719x
-    \item aic94xx
+	\item wd719x
+	\item aic94xx
 \end{itemize}
 
 \terminalcmd{pacman -S aic94xx-firmware}
 \terminalcmd{pacman -S wd719x-firmware}
 \terminalcmd{sudo mkinitcpio -p linux}
-    \block{To make sure drivers are loaded.}
+\block{To make sure drivers are loaded.}
 
 \section{System Setup III: Desktop}
 
@@ -530,24 +530,19 @@ Auto-login can be configured inside KDE's \lq System Settings\rq\ panel (\lq Sta
 
 \subsection{Network manager (Wifi)}
 \terminalcmd{sudo systemctl enable NetworkManager.service}
-	\block{Enables the network service. GUI network connections should work after reboot.}
+\block{Enables the network service. GUI network connections should work after reboot.}
 
 \subsection{GUI package manager}
 
 \href{https://wiki.manjaro.org/index.php?title=Pamac}{Pamac} is a nice package manager with AUR support. It can be installed with:
 
 \terminalcmd{yaourt -S pamac-aur}
-	\block{AUR support can be explicitly enabled inside the application's settings in the AUR tab.}
+\block{AUR support can be explicitly enabled inside the application's settings in the AUR tab.}
 
 \subsection{Printing/Scanning}
 
 \terminalcmd{sudo pacman -S cups print-manager}
 \terminalcmd{//TODO scanning}
-
-\subsection{Extras}
-
-\terminalcmd{sudo pacman -S kde-thumbnailer-odf kde-thumbnailer-epub kde-thumbnailer-gimpsources}
-\block{Adds thumbnail support to ODF, EPUB and gimp source files. Enable in Dolphin's settings.}
 
 \section{System Setup IV: Applications}
 
@@ -557,9 +552,9 @@ Auto-login can be configured inside KDE's \lq System Settings\rq\ panel (\lq Sta
 \subsection{File system}
 
 \terminalcmd{sudo pacman -S ntfs-3g exfat-utils}
-	\block{Enables access to NTFS and ExFAT file systems.}
+\block{Enables access to NTFS and ExFAT file systems.}
 \terminalcmd{sudo pacman -S gparted}
-	\block{Partition manager. Alternatively there is also \code{partitionmanager} (KDE)}
+\block{Partition manager. Alternatively there is also \code{partitionmanager} (KDE)}
 
 \subsection{Firewall}
 
@@ -569,10 +564,10 @@ If there is a systemd timeout \href{https://bugzilla.redhat.com/show_bug.cgi?id=
 
 \terminalcmd{sudo nano /etc/firewalld/firewalld.conf}
 \begin{blocksection}
-    Find the \code{CleanupOnExit} option in the file and set it to `\code{no}':\\
-    \begin{codeblock}
-    	CleanupOnExit=no
-    \end{codeblock}
+	Find the \code{CleanupOnExit} option in the file and set it to `\code{no}':\\
+	\begin{codeblock}
+		CleanupOnExit=no
+	\end{codeblock}
 \end{blocksection}
 
 \subsection{Tools/Utils}
@@ -580,6 +575,11 @@ If there is a systemd timeout \href{https://bugzilla.redhat.com/show_bug.cgi?id=
 p7zip
 unrar
 Ark (GUI front end for compression)
+
+\subsection{Dolphin extras}
+
+\terminalcmd{sudo pacman -S kde-thumbnailer-odf kde-thumbnailer-epub kde-thumbnailer-gimpsources}
+\block{Adds thumbnail support to ODF, EPUB and gimp source files. Enable in Dolphin's settings.}
 
 \subsection{Fonts}
 
@@ -659,17 +659,18 @@ Remove the USB stick and boot up.
 You may get the following sort of error after suspend/sleep:
 
 \begin{codeblock}
-    usb 2-4: usb\_reset\_and\_verify\_device Failed to disable LTM\\
-    usb usb2-port4: cannot disable (err=-32)
+	usb 2-4: usb\_reset\_and\_verify\_device Failed to disable LTM
+	
+	usb usb2-port4: cannot disable (err=-32)
 \end{codeblock}
 
 The Kernel \href{https://bugzilla.kernel.org/show_bug.cgi?id=117811}{Bug report \#117811}'s thread suggest disabling USB auto-suspend.
 
 \begin{itemize}[noitemsep,topsep=0pt,leftmargin=*]
-    \item If you are using [TLP](https://wiki.archlinux.org/index.php/TLP):\\
-        \code{nano /etc/default/tlp} and set \code{USB\_AUTOSUSPEND=0}
-    \item If you are \textbf{not} using \href{https://wiki.archlinux.org/index.php/TLP}{TLP}:\\
-        \code{sudo echo on | tee /sys/bus/usb/devices/*/power/control}
+	\item If you are using [TLP](https://wiki.archlinux.org/index.php/TLP):\\
+	\code{nano /etc/default/tlp} and set \code{USB\_AUTOSUSPEND=0}
+	\item If you are \textbf{not} using \href{https://wiki.archlinux.org/index.php/TLP}{TLP}:\\
+	\code{sudo echo on | tee /sys/bus/usb/devices/*/power/control}
 \end{itemize}
 
 

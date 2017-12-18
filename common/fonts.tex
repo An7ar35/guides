@@ -1,0 +1,24 @@
+% !TeX program = LuaLaTeX
+\usepackage[utf8]{inputenc} 
+\usepackage{fontspec} %Fonts
+	\setmainfont{ClearSans-Regular.ttf}[
+		Path		   = ../common/fonts/clear-sans/,
+		BoldFont       = ClearSans-Bold.ttf,
+		ItalicFont     = ClearSans-Italic.ttf,
+		BoldItalicFont = ClearSans-BoldItalic.ttf
+	]
+	\setmonofont{LiberationMono-Regular.ttf}[
+		Path 		   = ../common/fonts/liberation-mono/,
+		BoldFont	   = LiberationMono-Bold.ttf,
+		ItalicFont	   = LiberationMono-Italic.ttf,
+		BoldItalicFont = LiberationMono-BoldItalic.ttf
+	]
+	\newfontfamily\openiconic{open-iconic.ttf}[Path = ../common/fonts/open-iconic/]
+	\newfontfamily\devicon{devicon.ttf}[Path = ../common/fonts/devicon/]
+	\newfontfamily\chicago{ChicagoFLF.ttf}[Path = ../common/fonts/chicago/]
+	\newfontfamily{\industrial}[
+		Path = ../common/fonts/industrial/, 
+		ItalicFont = Industrial-Italic.otf]
+		{Industrial-Regular.otf}
+\usepackage{ragged2e} %text alignment
+\newcommand{\icon}[2]{\raisebox{-0.175\height}{\textcolor{#1}{\openiconic{#2}}}}
