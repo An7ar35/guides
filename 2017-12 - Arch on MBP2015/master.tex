@@ -94,8 +94,6 @@ This guide assumes a basic working knowledge of Linux command line (bash).
 		\raisebox{-0.2\height}{\color{red}{\openiconic[]}} Broken.}
 \end{small}
 
-//TODO
-
 \begin{center}
 	\setlength\arrayrulewidth{1pt}
 	\rowcolors{2}{gray!25}{white}
@@ -110,7 +108,7 @@ This guide assumes a basic working knowledge of Linux command line (bash).
 		AMD Radeon R9 M370X & \raisebox{-0.2\height}{\color{green}{\openiconic[]}} & Open source driver works like a charm\\
 		Intel Iris Pro Graphics\footnotemark[4] & \raisebox{-0.2\height}{\color{red}{\openiconic[]}} & Disabled by default, graphic switching not working.\\
 		Audio & \raisebox{-0.2\height}{\color{green}{\openiconic[]}} & Uses ALSA.\\
-		FaceTimeHD camera & \raisebox{-0.2\height}{\color{orange}{\openiconic[]}} & Requires firmware and driver from AUR. Suspend issues.\\
+		FaceTimeHD camera\footnotemark[5] & \raisebox{-0.2\height}{\color{orange}{\openiconic[]}} & Requires firmware and driver from AUR. Suspend issues.\\
 		Keyboard & \raisebox{-0.2\height}{\color{green}{\openiconic[]}} & ISO layout in command line but perfect in KDE.\\
 		Keyboard (Backlight) & \raisebox{-0.2\height}{\color{green}{\openiconic[]}} & Works out-of-the-box.\\
 		Keyboard \fbox{Fn} keys & \raisebox{-0.2\height}{\color{green}{\openiconic[]}} & Works out-of-the-box in KDE.
@@ -121,8 +119,7 @@ This guide assumes a basic working knowledge of Linux command line (bash).
 \footnotetext[2]{A workable solution can be setting the resolution to 1920x1200. The scale is good for a 15" screen.}
 \footnotetext[3]{Patch needs to be re-applied after any kernel updates at the moment.}
 \footnotetext[4]{Being stuck with using the dedicated GPU means that the battery will drain faster than when using Intel's IGU.}
-
-//Heating issues with mbp, fan control and turning off boost on the processor to keep things reasonable temperature-wise.
+\footnotetext[5]{Not all applications seem to work with this camera but it might just be compatibility problems on the app side.}
 
 \section{How-To}
 
@@ -507,21 +504,46 @@ Clone the \href{https://github.com/An7ar35/arch-scripts}{arch-scripts} repositor
 
 \subsubsection{Display brightness}
 
-\href{https://github.com/0xbb/apple_set_os.efi}{link}
+To get brightness control to work, a patched version of the \code{apple-gmux} kernel module is required. The vanilla module does \href{https://bugzilla.kernel.org/show_bug.cgi?id=105051#c37}{not work}.
 
-\href{https://github.com/Dunedan/mbp-2016-linux/issues/38}{link}
+An easy installer script is available in the \href{https://github.com/An7ar35/arch-scripts}{arch-script repository}.
 
+If you haven't previously cloned the repository (Turbo Boost section):
 
-\href{https://bugzilla.kernel.org/show_bug.cgi?id=105051#c37}{link}
-If the brightness control do not work after a kernel update the patch must be run again to get the functionality back. Hopefully this won''t be an issue in the future.
+\terminalcmd{cd ~/git-repos/system-packages}
+\terminalcmd{git clone https://github.com/An7ar35/arch-scripts}
 
+\vspace*{1em}
+\textbf{\textcolor{textgrey}{\underline{Installing the patched module}}}
 
-\href{https://bugzilla.kernel.org/show_bug.cgi?id=105051#c39}{link}
+\terminalcmd{cd arch-scripts/mbp-brightness-patch/}
+\terminalcmd{sudo ./install.sh}
 
+Then restart the machine.
+
+\vspace*{1em}
+\textbf{\textcolor{textgrey}{\underline{Kernel updates}}}
+
+If the brightness control breaks after a kernel update the patch must be run again to get the functionality back. Hopefully this won''t be an issue for long in future kernel releases.
 
 \subsubsection{Keyboard}
 
+All of these tweaks are optional and based on personal choice.
 
+\vspace*{1em}
+\textbf{\textcolor{textgrey}{\underline{Switch function keys on by default}}}
+
+To make function keys be used as first keys. i.e.: Pressing \fbox{F1} key alone will behave like F1 and pressing \fbox{fn}+\fbox{F1} will act as special key (brightness down).
+
+\terminalcmd{sudo nano /etc/modprobe.d/hid\_apple.conf}
+\begin{blocksection}
+	Add the following line to the file:
+	\begin{codeblock}
+		options hid\_apple fnmode=2
+	\end{codeblock}
+\end{blocksection}
+\terminalcmd{sudo mkinitcpio -p linux}
+	\block{Updates the \textit{initramfs} with the new configuration.}
 
 \subsubsection{Webcam}
 
@@ -538,7 +560,24 @@ To make it work, first install the firmware then the driver from AUR:
 
 To test the webcam, \code{mplayer tv://} or the \lq \textit{Qt 4VL Test Utility}\rq\ can be used inside KDE.
 
-//TODO mention issues with Kamoso, skype, etc...
+\begin{table}
+	\centering
+	\vspace*{1em}
+	\rowcolors{2}{gray!25}{white}
+	\setlength\arrayrulewidth{1pt}
+	\caption*{Tested applications} \label{tab:tested-webcam-apps} 
+	\begin{tabular}{|l|l|c|}
+		\rowcolor{white!50}
+		\hline
+		\textbf{App} & \textbf{Version} & \textbf{Works?} \\
+		\hline\hline
+		Discord & 0.0.3-1 & \ding{51}\\
+		Skype & 8.13.76.6-1 & \ding{55}\\
+		Kamoso & 3.2.4-1 & \ding{55}\\
+		\hline
+	\end{tabular}
+	\vspace*{1em}
+\end{table}
 
 \subsubsection{Other Drivers}
 
@@ -649,25 +688,47 @@ sqlitebrowser
 
 \subsection{Desktop apps}
 
-
-\subsubsection{Pacman}
-
-yakuake, thunderbird, firefox, cairo-dock, cairo-dock-plugins, deja-dup, truecrypt, veracrypt, 
+yakuake, thunderbird, firefox, cairo-dock, cairo-dock-plugins, 
+deja-dup, truecrypt, veracrypt, 
 redshift, plasma5-applets-redshift-control, 
-
-
-
-//discord
+discord
 
 \section{Troubleshooting}
 
+\subsection{Kernel errors}
+\subsubsection{USB suspend error}
+
+If you get the following sort of error after suspend/sleep:
+\vspace*{0.6em}
+\begin{codeblock}
+	usb 2-4: usb\_reset\_and\_verify\_device Failed to disable LTM\linebreak	
+	usb usb2-port4: cannot disable (err=-32)
+\end{codeblock}
+
+The Kernel \href{https://bugzilla.kernel.org/show_bug.cgi?id=117811}{Bug report \#117811}'s thread suggest disabling USB auto-suspend.
+
+\begin{itemize}[noitemsep,topsep=0pt,leftmargin=*]
+	\item If you are using \href{https://wiki.archlinux.org/index.php/TLP}{TLP}:\\
+	\code{nano /etc/default/tlp} and set \code{USB\_AUTOSUSPEND=0}
+	\item If you are \textbf{not} using \href{https://wiki.archlinux.org/index.php/TLP}{TLP}:\\
+	\code{sudo echo on | tee /sys/bus/usb/devices/*/power/control}
+\end{itemize}
+
+\subsubsection{fail to get arp ip table err:-23}
+
+//TODO `brcmfmac: brcmf\_inetaddr\_changed: fail to get arp ip table err:-23` after wifi connect
+
+\subsubsection{kgd2kfd\_probe failure}
+
+//TODO `kfd kfd: kgd2kfd\_probe failed` at start up
+
 \subsection{Boot partition recognition is slow}
 
-Usually caused by booting a OSX drive or creating one with the recovery process (\fbox{Cmd}+\fbox{R})
+This is usually caused by booting a OSX drive externally or creating one with the recovery process (\fbox{Cmd}+\fbox{R}). 
 
-Reset PRAM
+\textbf{Beware:} Before going forward, make sure you have an \underline{bootable Arch installation USB drive} ready as you will also need to go reinstall GRUB as described in the next section.
 
-https://support.apple.com/en-us/HT204063
+To remedy this problem you will need to \href{https://support.apple.com/en-us/HT204063}{reset the NVRAM} by pressing \fbox{Alt}+\fbox{Command}+\fbox{P}+\fbox{R} together and turn on the machine keeping them pressed for about 20 seconds (or until the second boot-up chime).
 
 \subsection{Boot partition not detected after PRAM reset}
 
@@ -695,34 +756,11 @@ Exit chroot environment and shutdown:
 
 Remove the USB stick and boot up.
 
-\section{Bugs}
+\subsection{Brightness control still doesn't work}
 
-//TODO `kfd kfd: kgd2kfd\_probe failed` at start up
+\textbf{\textcolor{textgrey}{[Unconfirmed]}}
 
-//TODO `brcmfmac: brcmf\_inetaddr\_changed: fail to get arp ip table err:-23` after wifi connect
-
-
-
-\subsection{USB suspend error}
-
-You may get the following sort of error after suspend/sleep:
-
-\begin{codeblock}
-	usb 2-4: usb\_reset\_and\_verify\_device Failed to disable LTM
-	
-	usb usb2-port4: cannot disable (err=-32)
-\end{codeblock}
-
-The Kernel \href{https://bugzilla.kernel.org/show_bug.cgi?id=117811}{Bug report \#117811}'s thread suggest disabling USB auto-suspend.
-
-\begin{itemize}[noitemsep,topsep=0pt,leftmargin=*]
-	\item If you are using [TLP](https://wiki.archlinux.org/index.php/TLP):\\
-	\code{nano /etc/default/tlp} and set \code{USB\_AUTOSUSPEND=0}
-	\item If you are \textbf{not} using \href{https://wiki.archlinux.org/index.php/TLP}{TLP}:\\
-	\code{sudo echo on | tee /sys/bus/usb/devices/*/power/control}
-\end{itemize}
-
-
+If you've patched the \code{apple-gmux} kernel module to no avail then installing the \href{https://github.com/0xbb/apple\_set_os.efi}{\code{apple\_set\_os.efi}} program in the GRUB bootloader chain might help jolt the system into recognising the brightness controls.
 
 \clearpage
 \section{References}
@@ -731,6 +769,7 @@ The Kernel \href{https://bugzilla.kernel.org/show_bug.cgi?id=117811}{Bug report 
 	\item \href{https://wiki.archlinux.org/index.php/MacBookPro11,x#Using_the_MacBook.27s_native_EFI_bootloader_.28recommended.29}{Arch Linux's MacBookPro 11.x Wiki page}
 	\item \href{https://gist.github.com/mattiaslundberg/8620837}{Mattias Lindberg's Encrypted volume Arch install guide}
 	\item \href{https://www.howtoforge.com/tutorial/how-to-install-arch-linux-with-full-disk-encryption/}{HowToForge | How to install Arch Linux with Full Disk Encryption}
+	\item \href{https://help.ubuntu.com/community/AppleKeyboard#Change_Function_Key_behavior}{Ubuntu | AppleKeyboard}
 \end{itemize}
 
 \end{document}
