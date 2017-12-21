@@ -1,10 +1,8 @@
 \documentclass[12pt,a4paper,oneside]{article}
-\usepackage{import}
-\import{../common/}{fonts.tex}
-\import{../common/}{graphics.tex}
 \usepackage[left=0cm,right=0cm,top=0cm,bottom=0cm,a4paper]{geometry}
-\usepackage[parfill]{parskip}
-\usepackage{epstopdf} %.eps file import
+\usepackage{import}
+	\import{../common/}{fonts.tex}
+	\import{../common/}{graphics.tex}
 \usepackage[table,xcdraw,usenames,dvipsnames]{xcolor}
 	\definecolor{code-background}{HTML}{f3f3f3}
 	\definecolor{dark}{HTML}{31363b}
@@ -17,10 +15,10 @@
 \newcolumntype{R}{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}X}
 \usepackage{verbatimbox}
 \usepackage{soul}
-\sethlcolor{code-background}
+	\sethlcolor{code-background}
 \usepackage[skins]{tcolorbox}
-\tcbset{commonstyle/.style={boxrule=0pt,sharp corners,enhanced,nobeforeafter,boxsep=0pt,colback=code-background,fit width from 0 to \textwidth}}
-\newtcolorbox{codesnippetbox}[1][]{commonstyle,#1}
+	\tcbset{commonstyle/.style={boxrule=0pt,sharp corners,enhanced,nobeforeafter,boxsep=0pt,colback=code-background,fit width from 0 to \textwidth}}
+	\newtcolorbox{codesnippetbox}[1][]{commonstyle,#1}
 \usepackage{enumitem}
 \usepackage[bottom]{footmisc}
 \usepackage{url}
@@ -30,74 +28,74 @@
 \usepackage[pages=some]{background}
 %\usepackage{memoir}
 \usepackage{mdframed} % minipage box
-\newmdenv{allborders}
-\newmdenv[topline=false,leftline=false,rightline=false,linecolor=linegrey]{bottomborder}
-\newmdenv[topline=false,leftline=false,rightline=false,linecolor=dark,backgroundcolor=dark,fontcolor=white]{headerborder}
-\mdfdefinestyle{titlebox}{
-	leftline=false,
-	rightline=false,
-	innertopmargin=2mm,
-	innerbottommargin=2mm,
-	linewidth=1pt,
-	backgroundcolor=dark, 
-	fontcolor=white, 
-	linecolor=white
-}
-\mdfdefinestyle{commentbox}{
-	topline=false,
-	rightline=false,
-	bottomline=false,
-	linewidth=1mm,
-	linecolor=linegrey,
-	splittopskip=0,
-	splitbottomskip=0,
-	frametitleaboveskip=0,
-	frametitlebelowskip=0,
-	skipabove=0,
-	skipbelow=0,
-	leftmargin=+0.3cm,
-	rightmargin=0,
-	innertopmargin=2mm,
-	innerbottommargin=2mm,
-	roundcorner=0mm,
-	backgroundcolor=white
-}
-\mdfdefinestyle{codebox}{
-	topline=false,
-	rightline=false,
-	leftline=false,
-	bottomline=false,
-	splittopskip=0,
-	splitbottomskip=0,
-	frametitleaboveskip=0,
-	frametitlebelowskip=0,
-	skipabove=0,
-	skipbelow=0,
-	leftmargin=0,
-	rightmargin=0,
-	innertopmargin=2mm,
-	innerbottommargin=2mm,
-	roundcorner=0mm,
-	backgroundcolor=code-background
-}
+	\newmdenv{allborders}
+	\newmdenv[topline=false,leftline=false,rightline=false,linecolor=linegrey]{bottomborder}
+	\newmdenv[topline=false,leftline=false,rightline=false,linecolor=dark,backgroundcolor=dark,fontcolor=white]{headerborder}
+	\mdfdefinestyle{titlebox}{
+		leftline=false,
+		rightline=false,
+		innertopmargin=2mm,
+		innerbottommargin=2mm,
+		linewidth=1pt,
+		backgroundcolor=dark, 
+		fontcolor=white, 
+		linecolor=white
+	}
+	\mdfdefinestyle{commentbox}{
+		topline=false,
+		rightline=false,
+		bottomline=false,
+		linewidth=1mm,
+		linecolor=linegrey,
+		splittopskip=0,
+		splitbottomskip=0,
+		frametitleaboveskip=0,
+		frametitlebelowskip=0,
+		skipabove=0,
+		skipbelow=0,
+		leftmargin=+0.3cm,
+		rightmargin=0,
+		innertopmargin=2mm,
+		innerbottommargin=2mm,
+		roundcorner=0mm,
+		backgroundcolor=white
+	}
+	\mdfdefinestyle{codebox}{
+		topline=false,
+		rightline=false,
+		leftline=false,
+		bottomline=false,
+		splittopskip=0,
+		splitbottomskip=0,
+		frametitleaboveskip=0,
+		frametitlebelowskip=0,
+		skipabove=0,
+		skipbelow=0,
+		leftmargin=0,
+		rightmargin=0,
+		innertopmargin=2mm,
+		innerbottommargin=2mm,
+		roundcorner=0mm,
+		backgroundcolor=code-background
+	}
 \usepackage{listings} %for code
-\lstset{ %
-	backgroundcolor=\color{code-background},
-	basicstyle=\scriptsize,
-	breakatwhitespace=false,         % sets if automatic breaks should only happen at whitespace
-	breaklines=true,                 % sets automatic line breaking
-	commentstyle=\color{grey},   	   % comment style
-	frame=single,                    % adds a frame around the code
-	keepspaces=true,                 % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
-	keywordstyle=\color{Violet},       % keyword style
-	%numbers=left,                    % where to put the line-numbers; possible values are (none, left, right)
-	%numbersep=5pt,                   % how far the line-numbers are from the code
-	%numberstyle=\tiny\color{gray}, % the style that is used for the line-numbers
-	%rulecolor=\color{black},         % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. comments (green here))
-	%stepnumber=1,                    % the step between two line-numbers. If it's 1, each line will be numbered
-	tabsize=4,
-	title=\lstname                   % show the filename of files included with \lstinputlisting; also try caption instead of title
-}
+	\lstset{ %
+		backgroundcolor=\color{code-background},
+		basicstyle=\scriptsize,
+		breakatwhitespace=false,         % sets if automatic breaks should only happen at whitespace
+		breaklines=true,                 % sets automatic line breaking
+		commentstyle=\color{grey},   	   % comment style
+		frame=single,                    % adds a frame around the code
+		keepspaces=true,                 % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
+		keywordstyle=\color{Violet},       % keyword style
+		%numbers=left,                    % where to put the line-numbers; possible values are (none, left, right)
+		%numbersep=5pt,                   % how far the line-numbers are from the code
+		%numberstyle=\tiny\color{gray}, % the style that is used for the line-numbers
+		%rulecolor=\color{black},         % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. comments (green here))
+		%stepnumber=1,                    % the step between two line-numbers. If it's 1, each line will be numbered
+		tabsize=4,
+		title=\lstname                   % show the filename of files included with \lstinputlisting; also try caption instead of title
+	}
 %%% Header %%%
 \newenvironment{headersection}{\begin{headerborder}\vspace{0.5cm}\begin{minipage}[t]{\textwidth}}{\end{minipage}\vspace{0.5em}\end{headerborder}}
 %%% Code snippets and terminal command snippets %%%

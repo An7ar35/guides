@@ -11,11 +11,10 @@
 		\includegraphics[width=\paperwidth,height=\paperheight]{img/Burst.pdf}
 	}%
 }
-\setlength{\parindent}{0em}
-\setlength{\parskip}{0.5em}
-\renewcommand{\baselinestretch}{1.2}
+
 
 \begin{document}
+
 \pagecolor{dark}
 \color{white}
 %\BgThispage
@@ -55,8 +54,7 @@
 
 \section{Forewords}
 
-After lots of reading, searching, experimenting, furious late-night shell command typing and 
-do-overs here are the results of replacing OSX with Arch Linux (KDE) on a mid-2015 MacBook Pro. 
+After lots of reading, searching, experimenting, furious late-night shell command typing and do-overs here are the results of replacing OSX with Arch Linux (KDE) on a mid-2015 MacBook Pro. 
 
 I would also advise backing up your drive using a complete bit-to-bit cloning process (unlike me, casually forgetting that step...) so that you retain a copy of everything including the recovery partition on the Mac. This way it is a one-step process to restore everything.
 
@@ -99,6 +97,7 @@ This guide assumes a basic working knowledge of Linux command line (bash).
 //TODO
 
 \begin{center}
+	\setlength\arrayrulewidth{1pt}
 	\rowcolors{2}{gray!25}{white}
 	\begin{tabular}{lcl}
 		\rowcolor{white!50}
@@ -123,8 +122,7 @@ This guide assumes a basic working knowledge of Linux command line (bash).
 \footnotetext[3]{Patch needs to be re-applied after any kernel updates at the moment.}
 \footnotetext[4]{Being stuck with using the dedicated GPU means that the battery will drain faster than when using Intel's IGU.}
 
-//Heating issues with mbp, fan control and turning off boost on the processor to keep things
-reasonable temperature-wise.
+//Heating issues with mbp, fan control and turning off boost on the processor to keep things reasonable temperature-wise.
 
 \section{How-To}
 
@@ -158,7 +156,7 @@ Make a copy of the colour profile file(s) on the mac to a USB stick. It will be 
 \terminalcmd{diskutil unmountDisk diskX}
 \block{Where \code{X} is your target USB drive number (use \code{diskutil list} for an overview of all connected drives to find out).}
 \terminalcmd{sudo dd if=/Users/\$USERNAME/Downloads/archlinux.iso of=/dev/diskX bs=16M}
-\block{Replace \textcolor{codekeyword1}{\$USERNAME} with your username on the mac and replace \code{X} with the USB drive's number.}
+\block{Replace \textcolor{codekeyword1}{\$USERNAME} with your user-name on the mac and replace \code{X} with the USB drive's number.}
 
 \section{Installation}
 
@@ -379,8 +377,8 @@ Reconnect to your wifi with \code{sudo wifi-menu}
 
 From your home directory (\code{cd \textasciitilde}):
 
-\terminalcmd{mkdir -p git-repos/system-builds}
-\terminalcmd{cd git-repos/system-builds}
+\terminalcmd{mkdir -p git-repos/system-packages}
+\terminalcmd{cd git-repos/system-packages}
 \block{Or whatever directory chosen to clone the repositories into.}
 \terminalcmd{git clone https://aur.archlinux.org/package-query.git}
 \block{Required for \href{https://github.com/archlinuxfr/yaourt}{Yaourt}}
@@ -414,10 +412,12 @@ For each of the 2 packages, \code{cd} into their respective directories and run 
 
 \subsubsection{Fans}
 
-\terminalcmd{yaourt -S macfanctld}
-\block{\href{https://github.com/MikaelStrom/macfanctld}{macfanctld}\textsuperscript{AUR} controls the mbp fans.}
-\terminalcmd{sudo systemctl enable macfanctld.service}
-\block{Turns on the service}
+\terminalcmd{yaourt -S mbpfan-git}
+	\block{\href{https://github.com/dgraziotin/mbpfan}{mbpfan-git}\textsuperscript{AUR} controls the MacBook's fans.}
+\terminalcmd{sudo systemctl enable mbpfan.service}
+	\block{Turns on the service}
+
+The configuration file is located in \code{/etc/mbpfan.conf}. Go there to customise the temperature limits and fan speeds.
 
 \subsubsection{Processor}
 
@@ -425,8 +425,53 @@ For each of the 2 packages, \code{cd} into their respective directories and run 
 \block{For intel's \href{https://wiki.archlinux.org/index.php/microcode}{microcode} update.}
 \terminalcmd{grub-mkconfig -o /boot/grub/grub.cfg}
 \block{Need to update grub so that it loads the Microcode updates at boot}
+
+\subsubsection{Processor: Turbo Boost}
+
+I would recommend disabling this feature if usage includes sustained load-heavy computation such as rendering, compiling, etc...
+
+Turbo boost automatically increases the operating frequency of the cores depending on the task load. This allows for greater performance under demanding conditions but also causes heating issues. These are exasperated by the design constraint of laptops where large heat-sinks + fans or water-cooling is not practical.
+
+Turning off Intel's CPU turbo boost makes a sizeable difference to temperature\footnote{Odly enough, I found that on my MBP the temperatures reached on OSX are a little worse than on Linux.} both on idle and under load. A cooler processor will also help increase the lifespan of the machine.
+
+The table below shows the different temperature reached with and without the turbo boost enabled on my machine. The load was from compiling a small C++/Qt application.
+The maximum turbo boost temperature was reached 10 seconds inside the compiling job and stayed at $100\,^{\circ}\mathrm{C}$ until completion with the fans going full blast.
+
+\begin{center}
+	\vspace*{1em}
+	\rowcolors{2}{gray!25}{white}
+	\setlength\arrayrulewidth{1pt}
+	\begin{tabular}{|l|c|c|}
+		\rowcolor{white!50}
+		\hline
+		\textbf{Turbo Boost state} & \textbf{Idle Temp.} & \textbf{Load Temp.}\\
+		\hline\hline
+		Enabled & $60\to 65\,^{\circ}\mathrm{C}$ & $100\,^{\circ}\mathrm{C}$\\ 
+		Disabled &  $48\to 50\,^{\circ}\mathrm{C}$ & $76\,^{\circ}\mathrm{C}$\\
+		\hline
+	\end{tabular}
+	\vspace*{1em}
+\end{center}
+
+\textbf{\textcolor{textgrey}{\underline{Requirements}}}
+
+\href{https://01.org/msr-tools}{MSR-Tools}\textsuperscript{AUR} provides utilities to access the processor MSRs and CPU ID directly. It is called by the turbo-boost disabler script.
+
 \terminalcmd{yaourt -S msr-tools}
-\block{\href{https://01.org/msr-tools}{MSR-Tools} will be used to turn off boost on the processor from a script.}
+
+\vspace*{1em}
+\textbf{\textcolor{textgrey}{\underline{Disabling Turbo Boost}}}
+
+Clone the \href{https://github.com/An7ar35/arch-scripts}{arch-scripts} repository into the \code{~/git-repos/system-packages} directory previously created.
+
+\terminalcmd{cd ~/git-repos/system-packages}
+\terminalcmd{git clone https://github.com/An7ar35/arch-scripts}
+\terminalcmd{cd arch-scripts/coreboost/}
+\terminalcmd{sudo ./install.sh}
+\begin{blocksection}
+	The installation copies the \code{coreboost.sh} script into \code{/usr/local/bin/} and the systemd service file to launch that script into \code{/etc/systemd/system/}.\newline
+	It then enables the service and loads it up. The turbo-boost disabler will be called upon at boot and after resuming suspend automatically.
+\end{blocksection}
 
 \subsubsection{Sound}
 
@@ -439,7 +484,6 @@ For each of the 2 packages, \code{cd} into their respective directories and run 
 \end{blocksection}
 \terminalcmd{speaker-test -c 2}
 \block{To make sure the sound works.}
-
 
 \textbf{Note}: The internal speaker might not be disabled when using the headphone jack. To solve this, enable "Auto-mute" in \code{alsamixer}.
 
@@ -473,6 +517,11 @@ If the brightness control do not work after a kernel update the patch must be ru
 
 
 \href{https://bugzilla.kernel.org/show_bug.cgi?id=105051#c39}{link}
+
+
+\subsubsection{Keyboard}
+
+
 
 \subsubsection{Webcam}
 
