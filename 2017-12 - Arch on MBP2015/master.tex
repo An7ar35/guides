@@ -57,19 +57,25 @@
 
 After lots of reading, searching, experimenting, furious late-night shell command typing and do-overs here are the results of replacing OSX with Arch Linux (KDE) on a mid-2015 MacBook Pro. 
 
-I would also advise backing up your drive using a complete bit-to-bit cloning process (unlike me who casually forgot that step...) so that you retain a copy of everything including the recovery partition on the Mac. This way it is a one-step process to restore everything.
+I would also advise backing up your drive using a complete bit-to-bit cloning process (unlike me who casually forgot that step... \begin{Large}\dejasans{😨}\end{Large}) so that you retain a copy of everything including the recovery partition on the Mac. This way it is a one-step process to restore everything.
 
 This guide assumes a basic working knowledge of Linux command line (bash) as well as Arch's \href{https://wiki.archlinux.org/index.php/Pacman}{\code{pacman}} and \href{https://archlinux.fr/yaourt-en}{\code{yaourt}\textsuperscript{AUR}} package managers.
 
 \section{Nomenclatures}
 
+{\def\arraystretch{2}\tabcolsep=10pt
 \begin{tabularx}{\textwidth}{lX}
 	\code{package-name} & Standard package \href{https://www.archlinux.org/packages/}{repository} - use \code{pacman} to install.\\
 	\code{package-name}\textsuperscript{AUR} & Arch User Repository package (\href{https://aur.archlinux.org/}{AUR}) - use \code{yaourt} to install.\\
 	\textcolor{orange}{\$} \code{...} & Command to type in at the command line prompt.\\
 	\textcolor{codekeyword1}{\$TEXT} & User defined variable (replace with what you want to define it as).\\
-	\fbox{Key} & Keyboard key
+	\key{Fn} & Function key.\\
+	\key{⌃}  & Ctrl key.\\
+	\key{⌥}  & Alt/Options key.\\
+	\key{⌘}  & Command (Cmd) key.\\
+	\key{⇧}  & Shift key.
 \end{tabularx}
+}
 
 \clearpage
 \section{Machine Specs}
@@ -99,6 +105,8 @@ This guide assumes a basic working knowledge of Linux command line (bash) as wel
 \end{small}
 
 \begin{center}
+	{
+	\def\arraystretch{1.5}
 	\setlength\arrayrulewidth{1pt}
 	\rowcolors{2}{gray!25}{white}
 	\begin{tabular}{lcl}
@@ -115,8 +123,9 @@ This guide assumes a basic working knowledge of Linux command line (bash) as wel
 		FaceTimeHD camera\footnotemark[5] & \raisebox{-0.2\height}{\color{orange}{\openiconic[]}} & Requires firmware and driver from AUR. Suspend issues.\\
 		Keyboard & \raisebox{-0.2\height}{\color{green}{\openiconic[]}} & ISO layout in command line but perfect in KDE.\\
 		Keyboard (Backlight) & \raisebox{-0.2\height}{\color{green}{\openiconic[]}} & Works out-of-the-box.\\
-		Keyboard \fbox{Fn} keys & \raisebox{-0.2\height}{\color{green}{\openiconic[]}} & Works out-of-the-box in KDE.
+		Keyboard \key{Fn} keys & \raisebox{-0.2\height}{\color{green}{\openiconic[]}} & Works out-of-the-box in KDE.
 	\end{tabular}
+	}
 \end{center}
 
 \footnotetext[1]{Error messages with default kernel module but doesn't seem to affect connections.}
@@ -152,8 +161,7 @@ Make a copy of the colour profile file(s) on the mac to a USB stick. It will be 
 
 \subsection{Booting from the USB stick}
 
-Simply plug in the USB in the MBP and press the \fbox{Alt} (a.k.a. \fbox{options}) key during start up
-to reach the boot menu.
+Simply plug in the USB in the MBP and press the \key{⌥} key during start up to reach the boot menu.
 
 \subsection{Preliminary setup}
 
@@ -344,7 +352,7 @@ For font maps check the \href{https://wiki.archlinux.org/index.php/fonts#Persist
 
 Remove the USB stick then \code{reboot}.
 
-\textbf{Note}: If you want a break this is the place to take it. Instead of rebooting just shutdown the machine.
+\textbf{Note}: If you want a break \begin{Large}\dejasans{😴}\end{Large} this is the place to take it. Instead of rebooting just shutdown the machine.
 
 \section{System Setup II: Hardware and Tools}
 
@@ -383,8 +391,8 @@ For each of the 2 packages, \code{cd} into their respective directories and run 
 \subsection{Console-Fu}
 
 \terminalcmd{yaourt -S hstr-git}
-\block{This is a replacement on \href{https://github.com/dvorka/hstr}{steroids} for the console's \fbox{ctrl}+\fbox{r}}
-\terminalcmd{hh --show-configuration >> ~/.bashrc}
+\block{This is a replacement on \href{https://github.com/dvorka/hstr}{steroids} for the console's \key{⌃}+\key{R}}
+\terminalcmd{hh --show-configuration >> \textasciitilde/.bashrc}
 \block{Adds the config options for HSTR to your bash profile and auto-starts hh on login.}
 \terminalcmd{pacman -S powertop htop}
 \block{Installs 2 of the most basic and useful monitoring tools in linux.}
@@ -452,9 +460,9 @@ The maximum turbo boost temperature was reached 10 seconds inside the compiling 
 \vspace*{1em}
 \textbf{\textcolor{textgrey}{\underline{Disabling Turbo Boost}}}
 
-Clone the \href{https://github.com/An7ar35/arch-scripts}{arch-scripts} repository into the \code{~/git-repos/system-packages} directory previously created.
+Clone the \href{https://github.com/An7ar35/arch-scripts}{arch-scripts} repository into the \code{\textasciitilde/git-repos/system-packages} directory previously created.
 
-\terminalcmd{cd ~/git-repos/system-packages}
+\terminalcmd{cd \textasciitilde/git-repos/system-packages}
 \terminalcmd{git clone https://github.com/An7ar35/arch-scripts}
 \terminalcmd{cd arch-scripts/coreboost/}
 \terminalcmd{sudo ./install.sh}
@@ -470,7 +478,7 @@ Clone the \href{https://github.com/An7ar35/arch-scripts}{arch-scripts} repositor
 \terminalcmd{sudo pacman -S alsa-utils alsa-plugins}
 \terminalcmd{alsamixer}
 \begin{blocksection}
-	Make sure your current sound card is the "HDA Intel PCH" and that your master volume is up and unmuted (mute=MM, unmuted=00 at the bottom of the volume bar. You can use the \fbox{M} key on the keyboard to toggle mute).
+	Make sure your current sound card is the "HDA Intel PCH" and that your master volume is up and unmuted (mute=MM, unmuted=00 at the bottom of the volume bar. You can use the \key{M} key on the keyboard to toggle mute).
 \end{blocksection}
 \terminalcmd{speaker-test -c 2}
 \block{To make sure the sound works.}
@@ -503,7 +511,7 @@ An easy installer script is available in the \href{https://github.com/An7ar35/ar
 
 If you haven't previously cloned the repository (Turbo Boost section):
 
-\terminalcmd{cd ~/git-repos/system-packages}
+\terminalcmd{cd \textasciitilde/git-repos/system-packages}
 \terminalcmd{git clone https://github.com/An7ar35/arch-scripts}
 
 \vspace*{1em}
@@ -517,16 +525,16 @@ Then restart the machine.
 \vspace*{1em}
 \textbf{\textcolor{textgrey}{\underline{Kernel updates}}}
 
-If the brightness control breaks after a kernel update the patch must be run again to get the functionality back.
+If the brightness control breaks after a kernel update the patch installer must be run again to get the functionality back.
 
-\subsubsection{Keyboard}
+\subsubsection{Keyboard //TODO}
 
 All of these tweaks are optional and based on personal choice.
 
 \vspace*{1em}
 \textbf{\textcolor{textgrey}{\underline{Switch function keys on by default}}}
 
-To make function keys be used as first keys. i.e.: Pressing \fbox{F1} key alone will behave like F1 and pressing \fbox{fn}+\fbox{F1} will act as special key (brightness down).
+To make function keys be used as first keys. i.e.: Pressing \key{F1} key alone will behave like F1 and pressing \key{Fn}+\key{F1} will act as special key (brightness down).
 
 \terminalcmd{sudo nano /etc/modprobe.d/hid\_apple.conf}
 \begin{blocksection}
@@ -537,6 +545,11 @@ To make function keys be used as first keys. i.e.: Pressing \fbox{F1} key alone 
 \end{blocksection}
 \terminalcmd{sudo mkinitcpio -p linux}
 	\block{Updates the \textit{initramfs} with the new configuration.}
+
+\vspace*{1em}
+\textbf{\textcolor{textgrey}{\underline{Swap the} \key{⌥} \underline{and} \key{⌘} \underline{keys}}}
+
+//TODO
 
 \subsubsection{Webcam}
 
@@ -640,17 +653,24 @@ Auto-login can be configured inside KDE's \lq System Settings\rq\ panel (\lq Sta
 
 \subsection{Colour Profile}
 
-//TODO
+To use the previously saved OSX colour profile(s) copy them/it to your home directory under \code{.color/icc/}. 
 
-\subsection{Printing/Scanning}
+If you don't plan on using KDE and/or want an agnostic way of loading colour profiles then install \code{xcalib}\textsuperscript{AUR} and follow the instructions provided in the \href{https://wiki.archlinux.org/index.php/mac#Color_Profile}{Arch Wiki}.
+
+\textbf{\textcolor{textgrey}{\underline{For KDE}}}
+
+\terminalcmd{sudo pacman -S colord-kde}
+\begin{blocksection}
+	Then, in \lq Systems Settings\rq\ under the \lq Color Corrections\rq\ section, add your profile file wanted to the \lq\textit{Apple - MacBookPro11,5}\rq\ and tick it instead of the pre-given default.
+\end{blocksection}
+
+
+\subsection{Printing/Scanning //TODO}
 
 \terminalcmd{sudo pacman -S cups print-manager}
 \terminalcmd{//TODO scanning}
 
 \section{System Setup IV: Applications}
-
-`flite` (missing packages causes a "text-to-speech" error - see `journalctl -b`)
-
 
 \subsection{File system}
 
@@ -673,11 +693,25 @@ If there is a systemd timeout \href{https://bugzilla.redhat.com/show_bug.cgi?id=
 	\end{codeblock}
 \end{blocksection}
 
-\subsection{Tools/Utils}
+\subsection{Compression, Archiving and Backup}
 
-p7zip
-unrar
-Ark (GUI front end for compression)
+\begin{varwidth}[t]{.5\textwidth}
+\textbf{\textcolor{textgrey}{\underline{Terminal}}}
+	\begin{itemize}[noitemsep,topsep=0pt,leftmargin=*]
+		\item \code{p7zip}
+		\item \code{unrar}
+		\item \code{zip}
+		\item \code{unzip}
+	\end{itemize}
+\end{varwidth}
+\hspace{4em}
+\begin{varwidth}[t]{.5\textwidth}
+	\textbf{\textcolor{textgrey}{\underline{GUI}}}
+	\begin{itemize}[noitemsep,topsep=0pt,leftmargin=*]
+		\item \code{ark} (Compression)
+		\item \code{deja-dup} (Backup)
+	\end{itemize}
+\end{varwidth}
 
 \subsection{Dolphin extras}
 
@@ -686,10 +720,21 @@ Ark (GUI front end for compression)
 
 \subsection{Fonts}
 
-adobe-source-code-pro
-adobe-source-sans-pro
-adobe-source-serif-pro
-ttf-mac-fonts
+Some more fonts for the system. If more are required, a good place to find some is the \href{https://fontlibrary.org/}{Font Library} which has a large collection of fonts with permissive licenses.
+
+\begin{varwidth}[t]{.5\textwidth}
+	\begin{itemize}[noitemsep,topsep=0pt,leftmargin=*]
+		\item \code{adobe-source-code-pro}
+		\item \code{adobe-source-sans-pro}
+		\item \code{adobe-source-serif-pro}
+	\end{itemize}
+\end{varwidth}
+\hspace{4em}
+\begin{varwidth}[t]{.5\textwidth}
+	\begin{itemize}[noitemsep,topsep=0pt,leftmargin=*]
+		\item \code{ttf-mac-fonts}\textsuperscript{AUR}
+	\end{itemize}
+\end{varwidth}
 
 \subsection{Console apps}
 
@@ -730,21 +775,21 @@ The Kernel \href{https://bugzilla.kernel.org/show_bug.cgi?id=117811}{Bug report 
 	\code{sudo echo on | tee /sys/bus/usb/devices/*/power/control}
 \end{itemize}
 
-\subsubsection{fail to get arp ip table err:-23}
+\subsubsection{fail to get arp ip table err:-23  //TODO}
 
 //TODO `brcmfmac: brcmf\_inetaddr\_changed: fail to get arp ip table err:-23` after wifi connect
 
-\subsubsection{kgd2kfd\_probe failure}
+\subsubsection{kgd2kfd\_probe failure //TODO}
 
 //TODO `kfd kfd: kgd2kfd\_probe failed` at start up
 
 \subsection{Boot partition recognition is slow}
 
-This is usually caused by booting a OSX drive externally or creating one with the recovery process (\fbox{Cmd}+\fbox{R}). 
+This is usually caused by booting a OSX drive externally or creating one with the recovery process (started with with \key{⌘}+\key{R} on the MacBook Pro). 
 
 \textbf{Beware:} Before going forward, make sure you have an \underline{bootable Arch installation USB drive} ready as you will also need to go reinstall GRUB as described in the next section.
 
-To remedy this problem you will need to \href{https://support.apple.com/en-us/HT204063}{reset the NVRAM} by pressing \fbox{Alt}+\fbox{Command}+\fbox{P}+\fbox{R} together and turn on the machine keeping them pressed for about 20 seconds (or until the second boot-up chime).
+To remedy this problem you will need to \href{https://support.apple.com/en-us/HT204063}{reset the NVRAM} by pressing \key{⌥}+\key{⌘}+\key{P}+\key{R} together and turn on the machine keeping them pressed for about 20 seconds (or until the second boot-up chime).
 
 \subsection{Boot partition not detected after PRAM reset}
 
@@ -777,6 +822,12 @@ Remove the USB stick and boot up.
 \textbf{\textcolor{textgrey}{[Unconfirmed]}}
 
 If you've patched the \code{apple-gmux} kernel module to no avail then installing the \href{https://github.com/0xbb/apple\_set_os.efi}{\code{apple\_set\_os.efi}} program in the GRUB bootloader chain might help jolt the system into recognising the brightness controls.
+
+\subsection{Text-to-Speech isn't working}
+
+Check \code{journalctl -b} for an error relating to \code{flite} being missing. Installing it should resolve the text-to-speech problem.
+
+\terminalcmd{sudo pacman -S flite}
 
 \clearpage
 \section{References}
