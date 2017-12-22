@@ -52,27 +52,31 @@
 \tableofcontents
 \clearpage
 
+\clearpage
 \section{Forewords}
 
 After lots of reading, searching, experimenting, furious late-night shell command typing and do-overs here are the results of replacing OSX with Arch Linux (KDE) on a mid-2015 MacBook Pro. 
 
-I would also advise backing up your drive using a complete bit-to-bit cloning process (unlike me, casually forgetting that step...) so that you retain a copy of everything including the recovery partition on the Mac. This way it is a one-step process to restore everything.
+I would also advise backing up your drive using a complete bit-to-bit cloning process (unlike me who casually forgot that step...) so that you retain a copy of everything including the recovery partition on the Mac. This way it is a one-step process to restore everything.
 
-This guide assumes a basic working knowledge of Linux command line (bash).
+This guide assumes a basic working knowledge of Linux command line (bash) as well as Arch's \href{https://wiki.archlinux.org/index.php/Pacman}{\code{pacman}} and \href{https://archlinux.fr/yaourt-en}{\code{yaourt}\textsuperscript{AUR}} package managers.
 
 \section{Nomenclatures}
 
 \begin{tabularx}{\textwidth}{lX}
 	\code{package-name} & Standard package \href{https://www.archlinux.org/packages/}{repository} - use \code{pacman} to install.\\
 	\code{package-name}\textsuperscript{AUR} & Arch User Repository package (\href{https://aur.archlinux.org/}{AUR}) - use \code{yaourt} to install.\\
-	\textcolor{orange}{\$} \code{...} & Command to type in at the command line prompt.
+	\textcolor{orange}{\$} \code{...} & Command to type in at the command line prompt.\\
+	\textcolor{codekeyword1}{\$TEXT} & User defined variable (replace with what you want to define it as).\\
+	\fbox{Key} & Keyboard key
 \end{tabularx}
 
+\clearpage
 \section{Machine Specs}
 
 \begin{tabularx}{\textwidth}{|c|X|}
 	\hline
-	Display   & \cbullet{15.4" LED-backlit Retina display with IPS technology; 2880-by-1800 native resolution at 220 pixels per inch with support for millions of colours} \\\hline
+	Display   & \cbullet{15.4" LED-backlit Retina display (2880x1800 at 220ppi)} \\\hline
 	Processor & \cbullet{2.5GHz quad-core Intel Core i7 processor (Turbo Boost up to 3.7GHz) with 6MB shared L3 cache} \\\hline
 	RAM       & · 16GB of 1600MHz DDR3L memory \\\hline
 	GPU       & · Intel Iris Pro Graphics, \newline
@@ -121,18 +125,7 @@ This guide assumes a basic working knowledge of Linux command line (bash).
 \footnotetext[4]{Being stuck with using the dedicated GPU means that the battery will drain faster than when using Intel's IGU.}
 \footnotetext[5]{Not all applications seem to work with this camera but it might just be compatibility problems on the app side.}
 
-\section{How-To}
-
-\subsection{Packages}
-
-For complete guides refer to the \code{pacman} \href{https://wiki.archlinux.org/index.php/Pacman}{Wiki} and \code{yaourt}  \href{https://archlinux.fr/yaourt-en}{Wiki}.
-
-\begin{tabularx}{\textwidth}{lX}
-	\code{pacman -Syuu} & Updates cache and packages installed with \code{pacman}.\\
-	\code{pacman -S package-name} & Installs \code{package-name}.\\
-	\code{pacman -R package-name} & Removes \code{package-name}.
-\end{tabularx}
-
+\clearpage
 \section{Pre-Installation}
 
 \subsection{Preparations}
@@ -504,7 +497,7 @@ Clone the \href{https://github.com/An7ar35/arch-scripts}{arch-scripts} repositor
 
 \subsubsection{Display brightness}
 
-To get brightness control to work, a patched version of the \code{apple-gmux} kernel module is required. The vanilla module does \href{https://bugzilla.kernel.org/show_bug.cgi?id=105051#c37}{not work}.
+To get brightness control to work, a patched version of the \code{apple-gmux} kernel module is required. The vanilla module does \href{https://bugzilla.kernel.org/show_bug.cgi?id=105051#c37}{not work} as of Linux kernel version 4.14.7-1. Perhaps later versions will eventually.
 
 An easy installer script is available in the \href{https://github.com/An7ar35/arch-scripts}{arch-script repository}.
 
@@ -524,7 +517,7 @@ Then restart the machine.
 \vspace*{1em}
 \textbf{\textcolor{textgrey}{\underline{Kernel updates}}}
 
-If the brightness control breaks after a kernel update the patch must be run again to get the functionality back. Hopefully this won''t be an issue for long in future kernel releases.
+If the brightness control breaks after a kernel update the patch must be run again to get the functionality back.
 
 \subsubsection{Keyboard}
 
@@ -560,7 +553,7 @@ To make it work, first install the firmware then the driver from AUR:
 
 To test the webcam, \code{mplayer tv://} or the \lq \textit{Qt 4VL Test Utility}\rq\ can be used inside KDE.
 
-\begin{table}
+\begin{table}[!h]
 	\centering
 	\vspace*{1em}
 	\rowcolors{2}{gray!25}{white}
@@ -578,6 +571,24 @@ To test the webcam, \code{mplayer tv://} or the \lq \textit{Qt 4VL Test Utility}
 	\end{tabular}
 	\vspace*{1em}
 \end{table}
+
+\subsubsection{Touchpad}
+
+Basic touchpad support is available with the Linux kernel. If you want to customise your experience, a specialised synaptic driver must be installed. There are 2 main options:
+
+\vspace*{1em}
+\textbf{\textcolor{textgrey}{\underline{Option 1: \code{xf86-input-synaptics}}}}
+
+The standard synaptic driver. KDE will detect it and enable you to change its settings within the \lq System Settings\rq\ panel. Only supports 2 finger gesture though.
+
+\terminalcmd{sudo pacman -S xf86-input-synaptics}
+
+\vspace*{1em}
+\textbf{\textcolor{textgrey}{\underline{Option 2: \code{xf86-input-mtrack}\textsuperscript{AUR}}}}
+
+Multi-touch support but KDE does \textbf{not} natively detect it so settings must be set manually in \code{/etc/X11/xorg.conf.d/10-mtrack.conf}. A full list of supported options is available in the project's Github \href{https://github.com/p2rkw/xf86-input-mtrack}{repository}.
+
+\terminalcmd{yaourt -S xf86-input-mtrack}
 
 \subsubsection{Other Drivers}
 
@@ -626,6 +637,10 @@ Auto-login can be configured inside KDE's \lq System Settings\rq\ panel (\lq Sta
 
 \terminalcmd{yaourt -S pamac-aur}
 \block{AUR support can be explicitly enabled inside the application's settings in the AUR tab.}
+
+\subsection{Colour Profile}
+
+//TODO
 
 \subsection{Printing/Scanning}
 
@@ -693,6 +708,7 @@ deja-dup, truecrypt, veracrypt,
 redshift, plasma5-applets-redshift-control, 
 discord
 
+\clearpage
 \section{Troubleshooting}
 
 \subsection{Kernel errors}
