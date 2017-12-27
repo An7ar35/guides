@@ -63,7 +63,7 @@ This guide assumes a basic working knowledge of Linux command line (bash) as wel
 
 \section{Nomenclatures}
 
-{\def\arraystretch{2}\tabcolsep=10pt
+{\def\arraystretch{1.5}
 \begin{tabularx}{\textwidth}{lX}
 	\code{package-name} & Standard package \href{https://www.archlinux.org/packages/}{repository} - use \code{pacman} to install.\\
 	\code{package-name}\textsuperscript{AUR} & Arch User Repository package (\href{https://aur.archlinux.org/}{AUR}) - use \code{yaourt} to install.\\
@@ -352,7 +352,7 @@ For font maps check the \href{https://wiki.archlinux.org/index.php/fonts#Persist
 
 Remove the USB stick then \code{reboot}.
 
-\textbf{Note}: If you want a break \begin{Large}\dejasans{😴}\end{Large} this is the place to take it. Instead of rebooting just shutdown the machine.
+\textbf{Note}: If you want a break (\begin{Large}\dejasans{☕}\end{Large}) this is the place to take it. Instead of rebooting just shutdown the machine.
 
 \section{System Setup II: Hardware and Tools}
 
@@ -451,14 +451,14 @@ The maximum turbo boost temperature was reached 10 seconds inside the compiling 
 	\vspace*{1em}
 \end{center}
 
-\textbf{\textcolor{textgrey}{\underline{Requirements}}}
+\textbf{\textcolor{textgrey}{\uline{Requirements}}}
 
 \href{https://01.org/msr-tools}{MSR-Tools}\textsuperscript{AUR} provides utilities to access the processor MSRs and CPU ID directly. It is called by the turbo-boost disabler script.
 
 \terminalcmd{yaourt -S msr-tools}
 
 \vspace*{1em}
-\textbf{\textcolor{textgrey}{\underline{Disabling Turbo Boost}}}
+\textbf{\textcolor{textgrey}{\uline{Disabling Turbo Boost}}}
 
 Clone the \href{https://github.com/An7ar35/arch-scripts}{arch-scripts} repository into the \code{\textasciitilde/git-repos/system-packages} directory previously created.
 
@@ -505,7 +505,7 @@ Clone the \href{https://github.com/An7ar35/arch-scripts}{arch-scripts} repositor
 
 \subsubsection{Display brightness}
 
-To get brightness control to work, a patched version of the \code{apple-gmux} kernel module is required. The vanilla module does \href{https://bugzilla.kernel.org/show_bug.cgi?id=105051#c37}{not work} as of Linux kernel version 4.14.7-1. Perhaps later versions will eventually.
+To get brightness control to work, a patched version of the \code{apple-gmux} kernel module is required. The vanilla module does \href{https://bugzilla.kernel.org/show_bug.cgi?id=105051#c37}{not work} as of Linux kernel version 4.14.8-1. Perhaps later versions will eventually.
 
 An easy installer script is available in the \href{https://github.com/An7ar35/arch-scripts}{arch-script repository}.
 
@@ -515,7 +515,7 @@ If you haven't previously cloned the repository (Turbo Boost section):
 \terminalcmd{git clone https://github.com/An7ar35/arch-scripts}
 
 \vspace*{1em}
-\textbf{\textcolor{textgrey}{\underline{Installing the patched module}}}
+\textbf{\textcolor{textgrey}{\uline{Installing the patched module}}}
 
 \terminalcmd{cd arch-scripts/mbp-brightness-patch/}
 \terminalcmd{sudo ./install.sh}
@@ -523,18 +523,18 @@ If you haven't previously cloned the repository (Turbo Boost section):
 Then restart the machine.
 
 \vspace*{1em}
-\textbf{\textcolor{textgrey}{\underline{Kernel updates}}}
+\textbf{\textcolor{textgrey}{\uline{Kernel updates}}}
 
 If the brightness control breaks after a kernel update the patch installer must be run again to get the functionality back.
 
-\subsubsection{Keyboard //TODO}
+\subsubsection{Keyboard}
 
-All of these tweaks are optional and based on personal choice.
+All of these tweaks are optional and based on personal choice. The one's I have not tested are marked as such.
 
 \vspace*{1em}
-\textbf{\textcolor{textgrey}{\underline{Switch function keys on by default}}}
+\textbf{\textcolor{textgrey}{\uline{Switch function keys on by default}}}
 
-To make function keys be used as first keys. i.e.: Pressing \key{F1} key alone will behave like F1 and pressing \key{Fn}+\key{F1} will act as special key (brightness down).
+To make function keys be used as first keys. i.e.: Pressing \key{F1} key alone will behave like F1 and pressing \key{Fn}+\key{F1} will act as the special key (brightness down).
 
 \terminalcmd{sudo nano /etc/modprobe.d/hid\_apple.conf}
 \begin{blocksection}
@@ -547,9 +547,17 @@ To make function keys be used as first keys. i.e.: Pressing \key{F1} key alone w
 	\block{Updates the \textit{initramfs} with the new configuration.}
 
 \vspace*{1em}
-\textbf{\textcolor{textgrey}{\underline{Swap the} \key{⌥} \underline{and} \key{⌘} \underline{keys}}}
+\textbf{\textcolor{textgrey}{\uline{Swap the} \key{⌥} \uline{and} \key{⌘} \uline{keys (untested)}}}
 
-//TODO
+\terminalcmd{sudo nano /etc/modprobe.d/hid\_apple.conf}
+\begin{blocksection}
+	Add the following line to the file:
+	\begin{codeblock}
+		options hid\_apple swap\_opt\_cmd=1
+	\end{codeblock}
+\end{blocksection}
+\terminalcmd{sudo mkinitcpio -p linux}
+\block{Updates the \textit{initramfs} with the new configuration.}
 
 \subsubsection{Webcam}
 
@@ -587,17 +595,28 @@ To test the webcam, \code{mplayer tv://} or the \lq \textit{Qt 4VL Test Utility}
 
 \subsubsection{Touchpad}
 
-Basic touchpad support is available with the Linux kernel. If you want to customise your experience, a specialised synaptic driver must be installed. There are 2 main options:
+Basic touchpad support is available with the Linux kernel. If you want to customise your experience, a specialised synaptic driver must be installed. There are 3 options to choose from. Make sure you only have one installed at any one time to avoid conflicts.
 
 \vspace*{1em}
-\textbf{\textcolor{textgrey}{\underline{Option 1: \code{xf86-input-synaptics}}}}
+\textbf{\textcolor{textgrey}{\uline{Option 1: \href{https://wiki.archlinux.org/index.php/Libinput}{\code{libinput}}}}}
+
+\terminalcmd{sudo pacman -S libinput}
+
+The Arch Wiki states that there may be an \href{https://wiki.archlinux.org/index.php/Libinput#Touchpad_settings_not_taking_effect_in_KDE.27s_Touchpad_KCM}{issue} where settings do not take effect from the KDE vanilla \lq\textit{System Settings}\rq\ touchpad panel. 
+
+Optionally, a \href{https://github.com/amezin/pointing-devices-kcm}{rewritten KCM} for all for all input devices supported by \code{libinput} is available from the  \href{https://aur.archlinux.org/packages/kcm-pointing-devices-git/}{AUR repository}:
+
+\terminalcmd{yaourt -S kcm-pointing-devices-git}
+
+\vspace*{1em}
+\textbf{\textcolor{textgrey}{\uline{Option 2: \code{xf86-input-synaptics}}}}
 
 The standard synaptic driver. KDE will detect it and enable you to change its settings within the \lq System Settings\rq\ panel. Only supports 2 finger gesture though.
 
 \terminalcmd{sudo pacman -S xf86-input-synaptics}
 
 \vspace*{1em}
-\textbf{\textcolor{textgrey}{\underline{Option 2: \code{xf86-input-mtrack}\textsuperscript{AUR}}}}
+\textbf{\textcolor{textgrey}{\uline{Option 3: \code{xf86-input-mtrack}\textsuperscript{AUR}}}}
 
 Multi-touch support but KDE does \textbf{not} natively detect it so settings must be set manually in \code{/etc/X11/xorg.conf.d/10-mtrack.conf}. A full list of supported options is available in the project's Github \href{https://github.com/p2rkw/xf86-input-mtrack}{repository}.
 
@@ -657,18 +676,31 @@ To use the previously saved OSX colour profile(s) copy them/it to your home dire
 
 If you don't plan on using KDE and/or want an agnostic way of loading colour profiles then install \code{xcalib}\textsuperscript{AUR} and follow the instructions provided in the \href{https://wiki.archlinux.org/index.php/mac#Color_Profile}{Arch Wiki}.
 
-\textbf{\textcolor{textgrey}{\underline{For KDE}}}
+\textbf{\textcolor{textgrey}{\uline{For KDE}}}
 
 \terminalcmd{sudo pacman -S colord-kde}
 \begin{blocksection}
 	Then, in \lq Systems Settings\rq\ under the \lq Color Corrections\rq\ section, add your profile file wanted to the \lq\textit{Apple - MacBookPro11,5}\rq\ and tick it instead of the pre-given default.
 \end{blocksection}
 
+\subsection{Printing \& Scanning}
 
-\subsection{Printing/Scanning //TODO}
+These are generic package installations required to make most printers and scanners work. Additional steps may (very likely!) be required to get these peripherals working in Linux.
+
+\subsubsection{Printing}
 
 \terminalcmd{sudo pacman -S cups print-manager}
-\terminalcmd{//TODO scanning}
+
+\subsubsection{Scanning}
+
+\terminalcmd{sudo pacman -S sane libksane sane-frontends xsane}
+\terminalcmd{sudo pacman -S skanlite}
+	\block{Simple image scanning application for KDE.}
+
+\vspace*{1em}
+If you have an Epson scanner:
+
+\terminalcmd{sudo pacman -S iscan iscan-data}
 
 \section{System Setup IV: Applications}
 
@@ -696,7 +728,7 @@ If there is a systemd timeout \href{https://bugzilla.redhat.com/show_bug.cgi?id=
 \subsection{Compression, Archiving and Backup}
 
 \begin{varwidth}[t]{.5\textwidth}
-\textbf{\textcolor{textgrey}{\underline{Terminal}}}
+\textbf{\textcolor{textgrey}{\uline{Terminal}}}
 	\begin{itemize}[noitemsep,topsep=0pt,leftmargin=*]
 		\item \code{p7zip}
 		\item \code{unrar}
@@ -706,7 +738,7 @@ If there is a systemd timeout \href{https://bugzilla.redhat.com/show_bug.cgi?id=
 \end{varwidth}
 \hspace{4em}
 \begin{varwidth}[t]{.5\textwidth}
-	\textbf{\textcolor{textgrey}{\underline{GUI}}}
+	\textbf{\textcolor{textgrey}{\uline{GUI}}}
 	\begin{itemize}[noitemsep,topsep=0pt,leftmargin=*]
 		\item \code{ark} (Compression)
 		\item \code{deja-dup} (Backup)
@@ -736,22 +768,27 @@ Some more fonts for the system. If more are required, a good place to find some 
 	\end{itemize}
 \end{varwidth}
 
-\subsection{Console apps}
+\subsection{Nice extra packages}
 
-`cmus`
-`wget`
-
-\subsubsection{Development}
-
-valgrind, cmake, clang, extra-cmake-modules, clang-tools-extra, 
-sqlitebrowser
-
-\subsection{Desktop apps}
-
-yakuake, thunderbird, firefox, cairo-dock, cairo-dock-plugins, 
-deja-dup, truecrypt, veracrypt, 
-redshift, plasma5-applets-redshift-control, 
-discord
+\begin{center}
+	{
+		\def\arraystretch{1.2}
+		\setlength\arrayrulewidth{1pt}
+		\rowcolors{2}{gray!25}{white}
+		\begin{tabularx}{\textwidth}{XcX}
+			\rowcolor{white}
+			\textbf{Package} & \textbf{Environment} & \textbf{Description}\\
+			\hline\hline
+			\code{cmus} & Term & Nice little console \href{https://cmus.github.io/}{music player}.\\
+			\code{wget} & Term & Command line \href{https://www.gnu.org/software/wget/}{tool} to retrieve files using HTTP, HTTPS, FTP and FTPS.\\
+			\code{yakuake} & KDE & Quake-like tidle \href{https://yakuake.kde.org/}{console}.\\
+			\code{cairo-dock}\linebreak \code{cairo-dock-plugins} & GUI & \href{https://www.glx-dock.org/}{Docks} like on a mac.\\
+			\code{redshift}\linebreak \code{plasma5-applets-redshift-control} & GUI/KDE & Colour temperature \href{http://jonls.dk/redshift/}{adjuster} and KDE controller applet.\\
+			\code{firefox} & GUI & Web browser.\\
+			\code{thunderbird} & GUI & Mail client.
+		\end{tabularx}
+	}
+\end{center}
 
 \clearpage
 \section{Troubleshooting}
@@ -791,11 +828,11 @@ This is usually caused by booting a OSX drive externally or creating one with th
 
 To remedy this problem you will need to \href{https://support.apple.com/en-us/HT204063}{reset the NVRAM} by pressing \key{⌥}+\key{⌘}+\key{P}+\key{R} together and turn on the machine keeping them pressed for about 20 seconds (or until the second boot-up chime).
 
-\subsection{Boot partition not detected after PRAM reset}
+\subsection{Boot partition not detected after NVRAM reset}
 
 Boot from the Arch setup USB (see section `Making a bootable USB').
 
-Mount all the partitions again (section `7.3.3 Mount all the partition') without making the directories:
+Mount all the partitions again (//TODO section `7.3.3 Mount all the partition') without making the directories:
 
 \terminalcmd{mount /dev/mapper/vg0-root /mnt}
 \terminalcmd{mount /dev/mapper/vg0-home /mnt/home}

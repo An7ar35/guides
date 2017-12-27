@@ -3,6 +3,7 @@
 \usepackage{import}
 	\import{../common/}{fonts.tex}
 	\import{../common/}{graphics.tex}
+	\setlength{\ULdepth}{5pt}
 \usepackage[none]{hyphenat}
 \usepackage[table,xcdraw,usenames,dvipsnames]{xcolor}
 	\definecolor{code-background}{HTML}{f3f3f3}
@@ -128,7 +129,9 @@
 		regular polygon sides=4,
 		rounded corners=2pt,
 		inner sep=1pt,
-		line width=1pt
+		line width=1pt,
+		minimum size=1pt,
+		scale=0.72
 		](key) {\textcolor{textgrey}{\dejasans{#1}}\strut};
 }
 %\usepackage{showframe}
