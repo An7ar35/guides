@@ -55,7 +55,15 @@
 \clearpage
 \section{Forewords}
 
-After lots of reading, searching, experimenting, furious late-night shell command typing and do-overs here are the results of replacing OSX with Arch Linux (KDE) on a mid-2015 MacBook Pro. 
+After lots of reading, searching, experimenting, furious late-night shell command typing and do-overs here are the results of replacing OSX with Arch Linux on a mid-2015 MacBook Pro.
+
+The setup is:
+\begin{itemize}[noitemsep,topsep=0pt,leftmargin=*]
+	\item Clean Arch installed, no OSX.
+	\item Encrypted root/home/swap partition (luks),
+	\item GRUB boot-loader (EFI),
+	\item KDE Plasma desktop environment.
+\end{itemize}
 
 I would also advise backing up your drive using a complete bit-to-bit cloning process (unlike me who casually forgot that step... \begin{Large}\dejasans{😨}\end{Large}) so that you retain a copy of everything including the recovery partition on the Mac. This way it is a one-step process to restore everything.
 
@@ -118,7 +126,7 @@ This guide assumes a basic working knowledge of Linux command line (bash) as wel
 		Display (IPS scaling)\footnotemark[2] & \raisebox{-0.2\height}{\color{orange}{\openiconic[]}} & Mixed results without Wayland\\
 		Display (Backlight) & \raisebox{-0.2\height}{\color{blue}{\openiconic[]}} & Needs a kernel patch\footnotemark[3] for \code{apple-gmux}.\\
 		AMD Radeon R9 M370X & \raisebox{-0.2\height}{\color{green}{\openiconic[]}} & Open source driver works like a charm\\
-		Intel Iris Pro Graphics\footnotemark[4] & \raisebox{-0.2\height}{\color{red}{\openiconic[]}} & Disabled by default, graphic switching not working.\\
+		Intel Iris Pro Graphics\footnotemark[4] & \raisebox{-0.2\height}{\color{blue}{\openiconic[]}} & Disabled by default. When enabled, dynamic switching a problem.\\
 		Audio & \raisebox{-0.2\height}{\color{green}{\openiconic[]}} & Uses ALSA.\\
 		FaceTimeHD camera\footnotemark[5] & \raisebox{-0.2\height}{\color{orange}{\openiconic[]}} & Requires firmware and driver from AUR. Suspend issues.\\
 		Keyboard & \raisebox{-0.2\height}{\color{green}{\openiconic[]}} & ISO layout in command line but perfect in KDE.\\
@@ -131,7 +139,7 @@ This guide assumes a basic working knowledge of Linux command line (bash) as wel
 \footnotetext[1]{Error messages with default kernel module but doesn't seem to affect connections.}
 \footnotetext[2]{A workable solution can be setting the resolution to 1920x1200. The scale is good for a 15" screen.}
 \footnotetext[3]{Patch needs to be re-applied after any kernel updates at the moment.}
-\footnotetext[4]{Being stuck with using the dedicated GPU means that the battery will drain faster than when using Intel's IGU.}
+\footnotetext[4]{When enabled, there are problems with back-lighting.}
 \footnotetext[5]{Not all applications seem to work with this camera but it might just be compatibility problems on the app side.}
 
 \clearpage
@@ -277,7 +285,8 @@ The assumption here is that the hard drive where everything will be installed to
 \block{Needs to run again to apply the changes made in the previous step.}
 \terminalcmd{nano /etc/locale.conf}
 \begin{blocksection}
-	To set permanent locale settings add the lines:\\
+	To set permanent locale settings add the lines:
+	\vspace*{1em}
 	\begin{codeblock}
 		LANG=en\_GB.UTF-8\\
 		LANGUAGE=en\_GB\\
@@ -293,7 +302,8 @@ For font maps check the \href{https://wiki.archlinux.org/index.php/fonts#Persist
 
 \terminalcmd{nano /etc/vconsole.conf}
 \begin{blocksection}
-	To set permanent setting for the console add the lines:\\
+	To set permanent setting for the console add the lines:
+	\vspace*{1em}
 	\begin{codeblock}
 		KEYMAP=uk\\
 		FONT=ter-228n\\
@@ -363,6 +373,7 @@ Reconnect to your wifi with \code{sudo wifi-menu}
 \terminalcmd{nano /etc/pacman.conf}
 \begin{blocksection}
 	Uncomment the multilib lines (i.e. remove the leading \code{\#}):
+	\vspace*{1em}
 	\begin{codeblock}
 		\#[multilib]\\
 		\#Include = /etc/pacman.d/mirrorlist
@@ -371,7 +382,28 @@ Reconnect to your wifi with \code{sudo wifi-menu}
 \terminalcmd{pacman -Syuu}
 \block{Updates the cache}
 
-\subsection{AUR package manager}
+\subsection{AUR package manager - Yaourt}
+
+There are two ways of doing this.
+
+\vspace*{1em}
+\textbf{\textcolor{textgrey}{\uline{a. Through Pacman}}}
+
+\terminalcmd{sudo nano /etc/pacman.conf}
+\begin{blocksection}
+	Add the folowing lines to the end of the file:
+	\vspace*{1em}
+	\begin{codeblock}
+		[archlinuxfr]\\
+		SigLevel = Never\\
+		Server = http://repo.archlinux.fr/\$arch
+	\end{codeblock}
+\end{blocksection}
+\terminalcmd{sudo pacman -Syuu}
+\terminalcmd{sudo pacman -S yaourt}
+
+\vspace*{1em}
+\textbf{\textcolor{textgrey}{\uline{b. Manual installation}}}
 
 From your home directory (\code{cd \textasciitilde}):
 
@@ -381,7 +413,6 @@ From your home directory (\code{cd \textasciitilde}):
 \terminalcmd{git clone https://aur.archlinux.org/package-query.git}
 \block{Required for \href{https://github.com/archlinuxfr/yaourt}{Yaourt}}
 \terminalcmd{git clone https://aur.archlinux.org/yaourt.git}
-\block{Easy AUR package installations from the console.}
 
 For each of the 2 packages, \code{cd} into their respective directories and run the following command to install:
 
@@ -483,6 +514,7 @@ Clone the \href{https://github.com/An7ar35/arch-scripts}{arch-scripts} repositor
 \terminalcmd{speaker-test -c 2}
 \block{To make sure the sound works.}
 
+\vspace*{1em}
 \textbf{Note}: The internal speaker might not be disabled when using the headphone jack. To solve this, enable "Auto-mute" in \code{alsamixer}.
 
 \subsubsection{Bluetooth}
@@ -493,7 +525,24 @@ Clone the \href{https://github.com/An7ar35/arch-scripts}{arch-scripts} repositor
 \terminalcmd{modprobe btusb}
 \terminalcmd{sudo systemctl enable bluetooth.service}
 
-\subsubsection{Video}
+\subsubsection{Wifi}
+
+\textbf{\textcolor{textgrey}{\uline{Broadcom Limited BCM43602 802.11ac Wireless LAN SoC (rev 01)}}}
+
+As with most Broadcom chipsets, there are going to be hiccups. The \code{brcmfmac} driver is automatically loaded and works for the most parts (lucky!). Some have reported connectivity issues with this driver. Here is a run-down that includes my experience:
+
+\vspace*{1em}
+\begin{tabularx}{\textwidth}{cX}
+	\raisebox{-0.2\height}{\color{green}{\openiconic[]}} & 2.4Ghz channels: works without issues.\\
+	\raisebox{-0.2\height}{\color{orange}{\openiconic[]}} & 5Ghz channels: I haven't tested but both 2.4Hgz and 5Ghz capabilities are listed in \code{iw list}. \href{https://bugzilla.kernel.org/show_bug.cgi?id=193121}{Reports} say that they are not detected but that's for \textit{rev 2} of the chipset. - To be checked.\\
+	\raisebox{-0.2\height}{\color{orange}{\openiconic[]}} & Low sensitivity: Lower than in OSX but not as bad as some reports.\\
+	\raisebox{-0.2\height}{\color{green}{\openiconic[]}} & Failure after 10-15mns has not occurred in my case. Might be a \textit{rev 2} only issue.
+\end{tabularx}
+
+\subsubsection{Video: AMD Radeon}
+
+Using the dedicated GPU means that the battery will drain faster than when using Intel's IGU but getting the backlight control to work has been relatively pain free.
+
 \terminalcmd{sudo pacman -S mesa xf86-video-amdgpu vulkan-radeon lib32-mesa}
 \begin{blocksection}
 	Installs the open source drivers for the ATI GPU along with the 32bit libs and the Vulkan drivers.\\
@@ -502,6 +551,63 @@ Clone the \href{https://github.com/An7ar35/arch-scripts}{arch-scripts} repositor
 \end{blocksection}
 \terminalcmd{yaourt -S radeontop}
 \block{\emph{(Optional)} Monitoring utility for Radeon GPU cards.}
+
+\subsubsection{Video: Intel's IGU}
+
+Getting Intel's IGU requires some work and is not perfect. First, the drivers:
+
+\terminalcmd{sudo pacman -S xf86-video-intel}
+
+\vspace*{1em}
+\textbf{\textcolor{textgrey}{\uline{Enabling the Intel IGU}}}
+
+We need to get the  \href{https://github.com/0xbb/apple\_set_os.efi}{apple\_set\_os.efi} binary from the repository's release section and unzip it. Then we need to copy it to the EFI partition:
+
+\terminalcmd{sudo mkdir /boot/efi/EFI/custom}
+\terminalcmd{sudo cp apple\_set\_os.efi /boot/efi/EFI/custom}
+
+Then, \code{apple\_set\_os.efi} needs to be placed in GRUB's bootloader chain. I decided for a menu item in order to make triggering \code{apple\_set\_os.efi} optional.
+
+\terminalcmd{lsblk --output MOUNTPOINT,LABEL,UUID}
+	\block{Look for \code{/boot/efi} and \textbf{make a note of its UUID}.}
+\terminalcmd{sudo nano /etc/grub.d/40\_custom}
+\begin{blocksection}
+	Add these lines to the file replacing \textcolor{codekeyword1}{\$UUID} with the UUID noted previously:\vspace*{1em}
+	\begin{codeblock}
+		menuentry \{\\
+			\tab search --no-floppy --set=root --fs-uuid \textcolor{codekeyword1}{\$UUID}\\
+			\tab chainloader (\$\{root\})/EFI/custom/apple\_set\_os.efi\\
+		\}
+	\end{codeblock}
+\end{blocksection}
+\terminalcmd{sudo grub-mkconfig -o /boot/grub/grub.cfg}
+	\block{Updates GRUB with the changes.}
+
+\vspace*{1em}
+\textbf{\textcolor{textgrey}{\uline{GPU Switcher}}}
+
+Finally, in order to be able to switch GPUs the \href{https://github.com/0xbb/gpu-switch}{gpu-switch\textsuperscript{AUR}} package is required.
+
+\terminalcmd{yaourt -S gpu-switch}
+
+
+\subsubsection{Video: Switching GPUs}
+
+Assuming you have both the AMD and Intel sections done:
+
+\vspace*{1em}
+\textbf{\textcolor{textgrey}{\uline{Switching to the integrated GPU (\raisebox{-0.2\height}{\includegraphics[height=1.2em]{img/Intel-logo.pdf}}):}}}
+
+\terminalcmd{sudo gpu-switch -i}
+
+Then use the "apple\_set\_os" menu option in GRUB at boot before your normal Arch menu option.
+
+\vspace*{1em}
+\textbf{\textcolor{textgrey}{\uline{Switching to the dedicated GPU (\raisebox{-0.2\height}{\includegraphics[height=1.2em]{img/ATI_logo.pdf}}):}}}
+
+\terminalcmd{sudo gpu-switch -d}
+
+Then \textbf{only} use your normal Arch menu option in GRUB at boot (default).
 
 \subsubsection{Display brightness}
 
@@ -539,6 +645,7 @@ To make function keys be used as first keys. i.e.: Pressing \key{F1} key alone w
 \terminalcmd{sudo nano /etc/modprobe.d/hid\_apple.conf}
 \begin{blocksection}
 	Add the following line to the file:
+	\vspace*{1em}
 	\begin{codeblock}
 		options hid\_apple fnmode=2
 	\end{codeblock}
@@ -552,6 +659,7 @@ To make function keys be used as first keys. i.e.: Pressing \key{F1} key alone w
 \terminalcmd{sudo nano /etc/modprobe.d/hid\_apple.conf}
 \begin{blocksection}
 	Add the following line to the file:
+	\vspace*{1em}
 	\begin{codeblock}
 		options hid\_apple swap\_opt\_cmd=1
 	\end{codeblock}
@@ -568,9 +676,7 @@ program that is keeping the camera active is running".
 To make it work, first install the firmware then the driver from AUR:
 
 \terminalcmd{yaourt -S facetimehd-firmware}
-\block{Installs the firmware alone.}
 \terminalcmd{yaourt -S bcwc-pcie-git}
-\block{Gets the driver.}
 
 To test the webcam, \code{mplayer tv://} or the \lq \textit{Qt 4VL Test Utility}\rq\ can be used inside KDE.
 
@@ -601,6 +707,15 @@ Basic touchpad support is available with the Linux kernel. If you want to custom
 \textbf{\textcolor{textgrey}{\uline{Option 1: \href{https://wiki.archlinux.org/index.php/Libinput}{\code{libinput}}}}}
 
 \terminalcmd{sudo pacman -S libinput}
+
+To add gestures, the  \href{https://github.com/bulletmark/libinput-gestures}{\code{libinput-gestures}\textsuperscript{AUR}} package can be installed:
+
+\terminalcmd{yaourt -S libinput-gestures}
+\terminalcmd{sudo gpasswd -a \$USERNAME imput}
+	\begin{blocksection}
+		Adds \textcolor{codekeyword1}{\$USERNAME} to the \lq input\rq\ group.
+	\end{blocksection}
+\terminalcmd{libinput-gesture-setup autostart}
 
 The Arch Wiki states that there may be an \href{https://wiki.archlinux.org/index.php/Libinput#Touchpad_settings_not_taking_effect_in_KDE.27s_Touchpad_KCM}{issue} where settings do not take effect from the KDE vanilla \lq\textit{System Settings}\rq\ touchpad panel. 
 
@@ -719,7 +834,8 @@ If there is a systemd timeout \href{https://bugzilla.redhat.com/show_bug.cgi?id=
 
 \terminalcmd{sudo nano /etc/firewalld/firewalld.conf}
 \begin{blocksection}
-	Find the \code{CleanupOnExit} option in the file and set it to `\code{no}':\\
+	Find the \code{CleanupOnExit} option in the file and set it to `\code{no}':
+	\vspace*{1em}
 	\begin{codeblock}
 		CleanupOnExit=no
 	\end{codeblock}
