@@ -22,7 +22,7 @@
 \centering
 \vspace*{0.5em}
 \begin{tabularx}{0.95\linewidth}{lR}
-	\cref{white}{https://an7ar35.bitbucket.io/}{\raisebox{-0.25\height}{\includegraphics[scale=0.25]{../common/graphics/avatar.png}} An7ar35} & 
+	\cref{white}{https://an7ar35.bitbucket.io/}{\raisebox{-0.4\height}{\includegraphics[height=3em]{../common/graphics/avatar-whitespace.pdf}}\tab[0.5em] An7ar35} & 
 	December 2017
 \end{tabularx}
 
@@ -40,7 +40,7 @@
 \includegraphics[height=5em]{img/kde-logo.pdf}with KDE\par
 \vspace*{\fill}
 \begin{tabularx}{0.95\textwidth}{lR}
-	& \includegraphics[height=3em]{../common/licenses/by-nc-sa_eu.pdf}
+	v1.0.0 & \includegraphics[height=3em]{../common/licenses/by-nc-sa_eu.pdf}
 \end{tabularx}
 \vspace*{2em}
 
@@ -55,19 +55,25 @@
 \clearpage
 \section{Forewords}
 
+\begin{flushright}
+	\textbf{This guide is current for the Linux kernel version \textcolor{red}{4.14.9-1}.}
+\end{flushright}
+
+\vspace*{1em}
 After lots of reading, searching, experimenting, furious late-night shell command typing and do-overs here are the results of replacing OSX with Arch Linux on a mid-2015 MacBook Pro.
 
 The setup is:
 \begin{itemize}[noitemsep,topsep=0pt,leftmargin=*]
-	\item Clean Arch installed, no OSX.
+	\item Clean Arch installation, no OSX.
 	\item Encrypted root/home/swap partition (luks),
 	\item GRUB boot-loader (EFI),
 	\item KDE Plasma desktop environment.
 \end{itemize}
 
+\vspace*{1em}
 I would also advise backing up your drive using a complete bit-to-bit cloning process (unlike me who casually forgot that step... \begin{Large}\dejasans{😨}\end{Large}) so that you retain a copy of everything including the recovery partition on the Mac. This way it is a one-step process to restore everything.
 
-This guide assumes a basic working knowledge of Linux command line (bash) as well as Arch's \href{https://wiki.archlinux.org/index.php/Pacman}{\code{pacman}} and \href{https://archlinux.fr/yaourt-en}{\code{yaourt}\textsuperscript{AUR}} package managers.
+This guide assumes a working knowledge of the Linux command line (bash) as well as Arch's \href{https://wiki.archlinux.org/index.php/Pacman}{\code{pacman}} and \href{https://archlinux.fr/yaourt-en}{\code{yaourt}\textsuperscript{AUR}} package managers.
 
 \section{Nomenclatures}
 
@@ -114,25 +120,25 @@ This guide assumes a basic working knowledge of Linux command line (bash) as wel
 
 \begin{center}
 	{
-	\def\arraystretch{1.5}
+	\def\arraystretch{1.2}
 	\setlength\arrayrulewidth{1pt}
 	\rowcolors{2}{gray!25}{white}
-	\begin{tabular}{lcl}
+	\begin{tabularx}{\textwidth}{lcX}
 		\rowcolor{white!50}
 		\textbf{Item} & \textbf{Result} & \textbf{Note}\\
 		\hline\hline
 		Wifi\footnotemark[1] & \raisebox{-0.2\height}{\color{green}{\openiconic[]}} & Works out-of-the-box, some error messages.\\
 		Bluetooth & \raisebox{-0.2\height}{\color{green}{\openiconic[]}} & Uses standard \code{bluez} package.\\
 		Display (IPS scaling)\footnotemark[2] & \raisebox{-0.2\height}{\color{orange}{\openiconic[]}} & Mixed results without Wayland\\
-		Display (Backlight) & \raisebox{-0.2\height}{\color{blue}{\openiconic[]}} & Needs a kernel patch\footnotemark[3] for \code{apple-gmux}.\\
-		AMD Radeon R9 M370X & \raisebox{-0.2\height}{\color{green}{\openiconic[]}} & Open source driver works like a charm\\
-		Intel Iris Pro Graphics\footnotemark[4] & \raisebox{-0.2\height}{\color{blue}{\openiconic[]}} & Disabled by default. When enabled, dynamic switching a problem.\\
+		AMD Radeon R9 M370X & \raisebox{-0.2\height}{\color{blue}{\openiconic[]}} & Open source driver works like a charm,\newline screen brightness control requires \code{apple-gmux} to be patched\footnotemark[3].\\
+		Intel Iris Pro Graphics\footnotemark[4] & \raisebox{-0.2\height}{\color{orange}{\openiconic[]}} & Disabled by default,\newline screen brightness control not working.\\
+		Graphic switching & \raisebox{-0.2\height}{\color{orange}{\openiconic[]}} & Dynamic switching doesn't work.\newline Manual switching requires reboot and some TLC\footnotemark[5].\\
 		Audio & \raisebox{-0.2\height}{\color{green}{\openiconic[]}} & Uses ALSA.\\
-		FaceTimeHD camera\footnotemark[5] & \raisebox{-0.2\height}{\color{orange}{\openiconic[]}} & Requires firmware and driver from AUR. Suspend issues.\\
+		FaceTimeHD camera\footnotemark[6] & \raisebox{-0.2\height}{\color{orange}{\openiconic[]}} & Requires firmware and driver from AUR. Suspend issues.\\
 		Keyboard & \raisebox{-0.2\height}{\color{green}{\openiconic[]}} & ISO layout in command line but perfect in KDE.\\
 		Keyboard (Backlight) & \raisebox{-0.2\height}{\color{green}{\openiconic[]}} & Works out-of-the-box.\\
 		Keyboard \key{Fn} keys & \raisebox{-0.2\height}{\color{green}{\openiconic[]}} & Works out-of-the-box in KDE.
-	\end{tabular}
+	\end{tabularx}
 	}
 \end{center}
 
@@ -140,7 +146,8 @@ This guide assumes a basic working knowledge of Linux command line (bash) as wel
 \footnotetext[2]{A workable solution can be setting the resolution to 1920x1200. The scale is good for a 15" screen.}
 \footnotetext[3]{Patch needs to be re-applied after any kernel updates at the moment.}
 \footnotetext[4]{When enabled, there are problems with back-lighting.}
-\footnotetext[5]{Not all applications seem to work with this camera but it might just be compatibility problems on the app side.}
+\footnotetext[5]{Pain in the arse and not streamlined at all. Backlight control on Intel's IGU breaks.}
+\footnotetext[6]{Not all applications seem to work with this camera but it might just be compatibility problems on the app side.}
 
 \clearpage
 \section{Pre-Installation}
@@ -223,7 +230,7 @@ The assumption here is that the hard drive where everything will be installed to
 \terminalcmd{mkfs.ext4 /dev/mapper/vg0-root}
 \terminalcmd{mkfs.ext4 /dev/mapper/vg0-home}
 
-\subsubsection{Mount all the partitions}
+\subsubsection{Mount all the partitions} \label{section:mount_all_the_partitions}
 
 \terminalcmd{mount /dev/mapper/vg0-root /mnt}
 \terminalcmd{swapon /dev/mapper/vg0-swap}
@@ -380,7 +387,7 @@ Reconnect to your wifi with \code{sudo wifi-menu}
 	\end{codeblock}
 \end{blocksection}
 \terminalcmd{pacman -Syuu}
-\block{Updates the cache}
+\block{Updates the cache/packages}
 
 \subsection{AUR package manager - Yaourt}
 
@@ -437,9 +444,7 @@ For each of the 2 packages, \code{cd} into their respective directories and run 
 \terminalcmd{pacman -S acpid}
 \block{\emph{(Optional)} \href{https://wiki.archlinux.org/index.php/Acpid}{Daemon} for delivering ACPI events.}
 
-\subsection{Hardware}
-
-\subsubsection{Fans}
+\subsection{Fans}
 
 \terminalcmd{yaourt -S mbpfan-git}
 	\block{\href{https://github.com/dgraziotin/mbpfan}{mbpfan-git}\textsuperscript{AUR} controls the MacBook's fans.}
@@ -448,14 +453,14 @@ For each of the 2 packages, \code{cd} into their respective directories and run 
 
 The configuration file is located in \code{/etc/mbpfan.conf}. Go there to customise the temperature limits and fan speeds.
 
-\subsubsection{Processor}
+\subsection{Processor}
 
 \terminalcmd{pacman -S intel-ucode}
 \block{For intel's \href{https://wiki.archlinux.org/index.php/microcode}{microcode} update.}
 \terminalcmd{grub-mkconfig -o /boot/grub/grub.cfg}
 \block{Need to update grub so that it loads the Microcode updates at boot}
 
-\subsubsection{Processor: Turbo Boost}
+\subsubsection{Turbo Boost}
 
 I would recommend disabling this feature if usage includes sustained load-heavy computation such as rendering, compiling, etc...
 
@@ -502,7 +507,7 @@ Clone the \href{https://github.com/An7ar35/arch-scripts}{arch-scripts} repositor
 	It then enables the service and loads it up. The turbo-boost disabler will be called upon at boot and after resuming suspend automatically.
 \end{blocksection}
 
-\subsubsection{Sound}
+\subsection{Sound}
 
 \href{https://wiki.archlinux.org/index.php/ALSA}{Alsa} works without issues.
 
@@ -517,7 +522,7 @@ Clone the \href{https://github.com/An7ar35/arch-scripts}{arch-scripts} repositor
 \vspace*{1em}
 \textbf{Note}: The internal speaker might not be disabled when using the headphone jack. To solve this, enable "Auto-mute" in \code{alsamixer}.
 
-\subsubsection{Bluetooth}
+\subsection{Bluetooth}
 
 \href{https://wiki.archlinux.org/index.php/Bluetooth}{Bluetooth} works out-of-the-box with the standard packages.
 
@@ -525,7 +530,7 @@ Clone the \href{https://github.com/An7ar35/arch-scripts}{arch-scripts} repositor
 \terminalcmd{modprobe btusb}
 \terminalcmd{sudo systemctl enable bluetooth.service}
 
-\subsubsection{Wifi}
+\subsection{Wifi}
 
 \textbf{\textcolor{textgrey}{\uline{Broadcom Limited BCM43602 802.11ac Wireless LAN SoC (rev 01)}}}
 
@@ -539,7 +544,9 @@ As with most Broadcom chipsets, there are going to be hiccups. The \code{brcmfma
 	\raisebox{-0.2\height}{\color{green}{\openiconic[]}} & Failure after 10-15mns has not occurred in my case. Might be a \textit{rev 2} only issue.
 \end{tabularx}
 
-\subsubsection{Video: AMD Radeon}
+\subsection{Video}
+
+\subsubsection{AMD Radeon}
 
 Using the dedicated GPU means that the battery will drain faster than when using Intel's IGU but getting the backlight control to work has been relatively pain free.
 
@@ -552,7 +559,7 @@ Using the dedicated GPU means that the battery will drain faster than when using
 \terminalcmd{yaourt -S radeontop}
 \block{\emph{(Optional)} Monitoring utility for Radeon GPU cards.}
 
-\subsubsection{Video: Intel's IGU}
+\subsubsection{Intel's IGU}
 
 Getting Intel's IGU requires some work and is not perfect. First, the drivers:
 
@@ -583,35 +590,31 @@ Then, \code{apple\_set\_os.efi} needs to be placed in GRUB's bootloader chain. I
 \terminalcmd{sudo grub-mkconfig -o /boot/grub/grub.cfg}
 	\block{Updates GRUB with the changes.}
 
-\vspace*{1em}
-\textbf{\textcolor{textgrey}{\uline{GPU Switcher}}}
+\subsubsection{Switching GPUs}
 
-Finally, in order to be able to switch GPUs the \href{https://github.com/0xbb/gpu-switch}{gpu-switch\textsuperscript{AUR}} package is required.
+This section assumes both the AMD and Intel installations have been done. An extra package (\href{https://github.com/0xbb/gpu-switch}{gpu-switch\textsuperscript{AUR}}) is required to be able to switch between the integrated and dedicated GPUs on the MBP 11,5.
 
 \terminalcmd{yaourt -S gpu-switch}
-
-
-\subsubsection{Video: Switching GPUs}
-
-Assuming you have both the AMD and Intel sections done:
 
 \vspace*{1em}
 \textbf{\textcolor{textgrey}{\uline{Switching to the integrated GPU (\raisebox{-0.2\height}{\includegraphics[height=1.2em]{img/Intel-logo.pdf}}):}}}
 
 \terminalcmd{sudo gpu-switch -i}
 
-Then use the "apple\_set\_os" menu option in GRUB at boot before your normal Arch menu option.
+Then use the "\textit{apple\_set\_os}" menu option in GRUB at boot before your normal "\textit{Arch}" menu option.
 
 \vspace*{1em}
 \textbf{\textcolor{textgrey}{\uline{Switching to the dedicated GPU (\raisebox{-0.2\height}{\includegraphics[height=1.2em]{img/ATI_logo.pdf}}):}}}
 
 \terminalcmd{sudo gpu-switch -d}
 
-Then \textbf{only} use your normal Arch menu option in GRUB at boot (default).
+Then \textbf{only} use your normal "\textit{Arch}" menu option in GRUB at boot (default).
 
 \subsubsection{Display brightness}
 
-To get brightness control to work, a patched version of the \code{apple-gmux} kernel module is required. The vanilla module does \href{https://bugzilla.kernel.org/show_bug.cgi?id=105051#c37}{not work} as of Linux kernel version 4.14.8-1. Perhaps later versions will eventually.
+\textbf{Note}: this only applies to the AMD Radeon. Brightness control currently does not work on the Intel IGU aside from turning it either on/off completely.
+
+To get brightness control to work, a patched version of the \code{apple-gmux} kernel module is required. The vanilla module does \href{https://bugzilla.kernel.org/show_bug.cgi?id=105051#c37}{not work} for the current Linux kernel. Perhaps later versions will eventually.
 
 An easy installer script is available in the \href{https://github.com/An7ar35/arch-scripts}{arch-script repository}.
 
@@ -633,7 +636,7 @@ Then restart the machine.
 
 If the brightness control breaks after a kernel update the patch installer must be run again to get the functionality back.
 
-\subsubsection{Keyboard}
+\subsection{Keyboard}
 
 All of these tweaks are optional and based on personal choice. The one's I have not tested are marked as such.
 
@@ -667,7 +670,7 @@ To make function keys be used as first keys. i.e.: Pressing \key{F1} key alone w
 \terminalcmd{sudo mkinitcpio -p linux}
 \block{Updates the \textit{initramfs} with the new configuration.}
 
-\subsubsection{Webcam}
+\subsection{Webcam}
 
 The 2015 MBP has \href{https://wiki.archlinux.org/index.php/MacBook#Facetime_HD}{Facetime HD}.
 Fortunately there is a \href{https://github.com/patjak/bcwc_pcie}{reversed-engineered driver} but "PC suspension is not supported if a 
@@ -699,7 +702,7 @@ To test the webcam, \code{mplayer tv://} or the \lq \textit{Qt 4VL Test Utility}
 	\vspace*{1em}
 \end{table}
 
-\subsubsection{Touchpad}
+\subsection{Touchpad}
 
 Basic touchpad support is available with the Linux kernel. If you want to customise your experience, a specialised synaptic driver must be installed. There are 3 options to choose from. Make sure you only have one installed at any one time to avoid conflicts.
 
@@ -737,7 +740,7 @@ Multi-touch support but KDE does \textbf{not} natively detect it so settings mus
 
 \terminalcmd{yaourt -S xf86-input-mtrack}
 
-\subsubsection{Other Drivers}
+\subsection{Other Drivers}
 
 Possible missing firmware module for:
 \begin{itemize}[noitemsep,topsep=0pt,leftmargin=*]
@@ -798,7 +801,7 @@ If you don't plan on using KDE and/or want an agnostic way of loading colour pro
 	Then, in \lq Systems Settings\rq\ under the \lq Color Corrections\rq\ section, add your profile file wanted to the \lq\textit{Apple - MacBookPro11,5}\rq\ and tick it instead of the pre-given default.
 \end{blocksection}
 
-\subsection{Printing \& Scanning}
+\subsection{Peripherals}
 
 These are generic package installations required to make most printers and scanners work. Additional steps may (very likely!) be required to get these peripherals working in Linux.
 
@@ -928,14 +931,6 @@ The Kernel \href{https://bugzilla.kernel.org/show_bug.cgi?id=117811}{Bug report 
 	\code{sudo echo on | tee /sys/bus/usb/devices/*/power/control}
 \end{itemize}
 
-\subsubsection{fail to get arp ip table err:-23  //TODO}
-
-//TODO `brcmfmac: brcmf\_inetaddr\_changed: fail to get arp ip table err:-23` after wifi connect
-
-\subsubsection{kgd2kfd\_probe failure //TODO}
-
-//TODO `kfd kfd: kgd2kfd\_probe failed` at start up
-
 \subsection{Boot partition recognition is slow}
 
 This is usually caused by booting a OSX drive externally or creating one with the recovery process (started with with \key{⌘}+\key{R} on the MacBook Pro). 
@@ -948,7 +943,7 @@ To remedy this problem you will need to \href{https://support.apple.com/en-us/HT
 
 Boot from the Arch setup USB (see section `Making a bootable USB').
 
-Mount all the partitions again (//TODO section `7.3.3 Mount all the partition') without making the directories:
+Mount all the partitions again (see section \ref{section:mount_all_the_partitions}) without making the directories:
 
 \terminalcmd{mount /dev/mapper/vg0-root /mnt}
 \terminalcmd{mount /dev/mapper/vg0-home /mnt/home}
@@ -969,12 +964,6 @@ Exit chroot environment and shutdown:
 \terminalcmd{shutdown now}
 
 Remove the USB stick and boot up.
-
-\subsection{Brightness control still doesn't work}
-
-\textbf{\textcolor{textgrey}{[Unconfirmed]}}
-
-If you've patched the \code{apple-gmux} kernel module to no avail then installing the \href{https://github.com/0xbb/apple\_set_os.efi}{\code{apple\_set\_os.efi}} program in the GRUB bootloader chain might help jolt the system into recognising the brightness controls.
 
 \subsection{Text-to-Speech isn't working}
 
