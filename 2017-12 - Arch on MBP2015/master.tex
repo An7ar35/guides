@@ -23,7 +23,7 @@
 \vspace*{0.5em}
 \begin{tabularx}{0.95\linewidth}{lR}
 	\cref{white}{https://an7ar35.bitbucket.io/}{\raisebox{-0.4\height}{\includegraphics[height=3em]{../common/graphics/avatar-whitespace.pdf}}\tab[0.5em] An7ar35} & 
-	December 2017
+	December 2017\newline \scriptsize{(Updated 02/01/18)}
 \end{tabularx}
 
 \vspace*{\fill}
@@ -40,7 +40,7 @@
 \includegraphics[height=5em]{img/kde-logo.pdf}with KDE\par
 \vspace*{\fill}
 \begin{tabularx}{0.95\textwidth}{lR}
-	v1.0.0 & \includegraphics[height=3em]{../common/licenses/by-nc-sa_eu.pdf}
+	v1.0.1 & \includegraphics[height=3em]{../common/licenses/by-nc-sa_eu.pdf}
 \end{tabularx}
 \vspace*{2em}
 
@@ -53,7 +53,7 @@
 \clearpage
 
 \clearpage
-\section{Forewords}
+\section{Foreword}
 
 \begin{flushright}
 	\textbf{This guide is current for the Linux kernel version \textcolor{red}{4.14.9-1}.}
@@ -75,7 +75,7 @@ I would also advise backing up your drive using a complete bit-to-bit cloning pr
 
 This guide assumes a working knowledge of the Linux command line (bash) as well as Arch's \href{https://wiki.archlinux.org/index.php/Pacman}{\code{pacman}} and \href{https://archlinux.fr/yaourt-en}{\code{yaourt}\textsuperscript{AUR}} package managers.
 
-\section{Nomenclatures}
+\section{Nomenclature}
 
 {\def\arraystretch{1.5}
 \begin{tabularx}{\textwidth}{lX}
@@ -425,6 +425,23 @@ For each of the 2 packages, \code{cd} into their respective directories and run 
 
 \terminalcmd{makepkg -si}
 \block{e.g.: \code{cd package-query} then \code{makepkg -si}}
+
+\vspace*{1em}
+\textbf{\textcolor{textgrey}{\uline{Finally}}}
+	
+To build AUR packages with all 4 cores of the processor we need to modify the \code{makepkg.conf} file.
+
+\terminalcmd{sudo nano /etc/makepkg.conf}
+\begin{blocksection}
+	Find the line:
+	\begin{codeblock}
+		\#MAKEFLAGS="-j2"		
+	\end{codeblock}
+	Uncomment the line and change the flag to \code{"-j4"}:
+	\begin{codeblock}
+		MAKEFLAGS="-j4"		
+	\end{codeblock}
+\end{blocksection}
 
 \subsection{Console-Fu}
 
